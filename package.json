@@ -6,11 +6,18 @@
   "keywords": [
     "PrimeNG, Angular, Tree"
   ], 
+  "bugs": {
+    "url": "https://github.com/c-harlake/AdvancedTree/issues"
+  },  
   "man": "./README.md",
   "author": {
     "name": "Carsten Harlake Cimpa GmbH",
     "email": "carsten.harlake@cimpa.com"
   }, 
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/c-harlake/AdvancedTree.git"
+  },  
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
@@ -46,7 +53,6 @@
     "codelyzer": "~4.0.1",
     "jasmine-core": "~2.6.2",
     "jasmine-spec-reporter": "~4.1.0",
-    "jquery": "^3.3.1",
     "karma": "~1.7.0",
     "karma-chrome-launcher": "~2.1.1",
     "karma-cli": "~1.0.1",
