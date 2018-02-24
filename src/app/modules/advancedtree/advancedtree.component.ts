@@ -21,7 +21,7 @@ import {Subscription} from 'rxjs/Subscription';
                     [ngClass]="{'ui-treenode-selectable':tree.selectionMode && node.selectable !== false,'ui-treenode-dragover':draghoverNode, 'ui-treenode-content-selected':isSelected()}" [draggable]="tree.draggableNodes" (dragstart)="onDragStart($event)" (dragend)="onDragStop($event)">
                     <span class="ui-tree-toggler  fa fa-fw" [ngClass]="{'fa-caret-right':!node.expanded,'fa-caret-down':node.expanded}"
                             (click)="toggle($event)"></span
-                    ><div class="ui-chkbox" *ngIf="tree.selectionMode == 'checkbox'"><div class="ui-chkbox-box ui-widget ui-corner-all ui-state-default">
+                    ><div class="ui-chkbox" *ngIf="tree.checkbox"><div class="ui-chkbox-box ui-widget ui-corner-all ui-state-default">
                         <span class="ui-chkbox-icon ui-clickable fa" 
                             [ngClass]="{'fa-check':isChecked(),'fa-minus':node.partialChecked}"></span></div></div
                     ><span [class]="getIcon()" *ngIf="node.icon||node.expandedIcon||node.collapsedIcon"></span
@@ -333,6 +333,8 @@ export class AdvancedTree implements OnInit, AfterContentInit, OnDestroy, Advanc
 
     @Input() selectionMode: string;
 
+	@Input() checkbox: boolean = false;
+
     @Input() selection: any;
 
 	@Input() checked: any;
@@ -464,7 +466,7 @@ export class AdvancedTree implements OnInit, AfterContentInit, OnDestroy, Advanc
 
             let index = this.findIndexInChecked(node);
             let checked = (index >= 0);
-			if (this.isCheckboxSelectionMode()) {
+			if (this.isCheckboxMode()) {
 				if (checked) {
                     if (this.propagateCheckedDown) {
                         this.propagateChkDown(node, false);
@@ -503,37 +505,37 @@ export class AdvancedTree implements OnInit, AfterContentInit, OnDestroy, Advanc
             let index = this.findIndexInSelection(node);
             let selected = (index >= 0);
 
-            if (this.isCheckboxSelectionMode()) {
-                if (selected) {
-                    if (this.propagateSelectionDown) {
-                        this.propagateDown(node, false);
-                    }
-                    else {
-                        this.selection = this.selection.filter((val, i) => i !== index);
-                    }
-                    if (this.propagateSelectionUp && node.parent) {
-                        this.propagateUp(node.parent, false);
-                    }
+            // if (this.isCheckboxMode()) {
+            //     if (selected) {
+            //         if (this.propagateSelectionDown) {
+            //             this.propagateDown(node, false);
+            //         }
+            //         else {
+            //             this.selection = this.selection.filter((val, i) => i !== index);
+            //         }
+            //         if (this.propagateSelectionUp && node.parent) {
+            //             this.propagateUp(node.parent, false);
+            //         }
 
-                    this.selectionChange.emit(this.selection);
-                    this.onNodeUnselect.emit({originalEvent: event, node: node});
-                }
-                else {
-                    if (this.propagateSelectionDown) {
-                        this.propagateDown(node, true);
-                    }
-                    else {
-                        this.selection = [...this.selection || [], node];
-                    }
-                    if (this.propagateSelectionUp && node.parent) {
-                        this.propagateUp(node.parent, true);
-                    }
+            //         this.selectionChange.emit(this.selection);
+            //         this.onNodeUnselect.emit({originalEvent: event, node: node});
+            //     }
+            //     else {
+            //         if (this.propagateSelectionDown) {
+            //             this.propagateDown(node, true);
+            //         }
+            //         else {
+            //             this.selection = [...this.selection || [], node];
+            //         }
+            //         if (this.propagateSelectionUp && node.parent) {
+            //             this.propagateUp(node.parent, true);
+            //         }
 
-                    this.selectionChange.emit(this.selection);
-                    this.onNodeSelect.emit({originalEvent: event, node: node});
-                }
-            }
-            else {
+            //         this.selectionChange.emit(this.selection);
+            //         this.onNodeSelect.emit({originalEvent: event, node: node});
+            //     }
+            // }
+            // else {
                 let metaSelection = this.nodeTouched ? false : this.metaKeySelection;
 
                 if (metaSelection) {
@@ -544,7 +546,16 @@ export class AdvancedTree implements OnInit, AfterContentInit, OnDestroy, Advanc
                             this.selectionChange.emit(null);
                         }
                         else {
-                            this.selection = this.selection.filter((val, i) => i !== index);
+                            if (this.propagateSelectionDown) {
+                                this.propagateDown(node, false);
+                            }
+                            else {
+                                this.selection = this.selection.filter((val, i) => i !== index);
+                            }
+                            if (this.propagateSelectionUp && node.parent) {
+                                this.propagateUp(node.parent, false);
+                            }
+                            // this.selection = this.selection.filter((val, i) => i !== index);
                             this.selectionChange.emit(this.selection);
                         }
 
@@ -557,6 +568,12 @@ export class AdvancedTree implements OnInit, AfterContentInit, OnDestroy, Advanc
                         else if (this.isMultipleSelectionMode()) {
                             this.selection = (!metaKey) ? [] : this.selection || [];
                             this.selection = [...this.selection, node];
+                            if (this.propagateSelectionDown) {
+                                this.propagateDown(node, true);
+                            }
+                            if (this.propagateSelectionUp && node.parent) {
+                                this.propagateUp(node.parent, false);
+                            }
                             this.selectionChange.emit(this.selection);
                         }
 
@@ -587,7 +604,7 @@ export class AdvancedTree implements OnInit, AfterContentInit, OnDestroy, Advanc
 
                     this.selectionChange.emit(this.selection);
                 }
-            }
+            // }
         }
 
         this.nodeTouched = false;
@@ -604,7 +621,7 @@ export class AdvancedTree implements OnInit, AfterContentInit, OnDestroy, Advanc
             if (eventTarget.className && eventTarget.className.indexOf('ui-tree-toggler') === 0) {
                 return;
             }
-			else if (eventTarget.className && eventTarget.className.indexOf('ui-chkbox') === 0) {
+            else if (eventTarget.className && eventTarget.className.indexOf('ui-chkbox') === 0) {
                 let index = this.findIndexInChecked(node);
                 let checked = (index >= 0);
 
@@ -618,7 +635,7 @@ export class AdvancedTree implements OnInit, AfterContentInit, OnDestroy, Advanc
                 }
                 // this.contextMenu.show(event);
                 // this.onNodeContextMenuSelect.emit({originalEvent: event, node: node});
-			}
+            }
             else {
                 let index = this.findIndexInSelection(node);
                 let selected = (index >= 0);
@@ -646,6 +663,7 @@ export class AdvancedTree implements OnInit, AfterContentInit, OnDestroy, Advanc
                 index = (this.selection === node) ? 0 : - 1;
             }
             else {
+
                 for (let i = 0; i  < this.selection.length; i++) {
                     if (this.selection[i] === node) {
                         index = i;
@@ -662,7 +680,7 @@ export class AdvancedTree implements OnInit, AfterContentInit, OnDestroy, Advanc
         let index: number = -1;
 
         if (this.selectionMode && this.checked) {
-            if (this.isCheckboxSelectionMode()) {
+            if (this.isCheckboxMode()) {
                 for (let i = 0; i  < this.checked.length; i++) {
                     if (this.checked[i] === node) {
                         index = i;
@@ -807,8 +825,8 @@ export class AdvancedTree implements OnInit, AfterContentInit, OnDestroy, Advanc
         return this.selectionMode && this.selectionMode === 'multiple';
     }
 
-    isCheckboxSelectionMode() {
-        return this.selectionMode && this.selectionMode === 'checkbox';
+    isCheckboxMode() {
+        return this.checkbox;
     }
 
     getTemplateForNode(node: AdvancedTreeNode): TemplateRef<any> {
@@ -834,7 +852,7 @@ export class AdvancedTree implements OnInit, AfterContentInit, OnDestroy, Advanc
             if (this.allowDrop(dragNode, null, this.dragNodeScope)) {
                 let dragNodeIndex = this.dragNodeIndex;
                 this.dragNodeSubNodes.splice(dragNodeIndex, 1);
-                this.value = this.value||[];
+                this.value = this.value || [];
                 this.value.push(dragNode);
 
                 this.dragDropService.stopDrag({
@@ -861,7 +879,7 @@ export class AdvancedTree implements OnInit, AfterContentInit, OnDestroy, Advanc
 
     allowDrop(dragNode: AdvancedTreeNode, dropNode: AdvancedTreeNode, dragNodeScope: any): boolean {
         if (!dragNode) {
-            //prevent random html elements to be dragged
+            // prevent random html elements to be dragged
             return false;
         }
         else if (this.isValidDragScope(dragNodeScope)) {

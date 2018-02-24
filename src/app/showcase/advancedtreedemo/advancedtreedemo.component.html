@@ -20,13 +20,13 @@
     <div style="margin-top:8px">Selected Node: {{selectedFile ? selectedFile.label : 'none'}}</div>
     
     <h3>Multiple Selection with Metakey</h3>
-    <p-atree [value]="filesTree3" selectionMode="multiple" [(selection)]="selectedFiles" 
+    <p-atree [value]="filesTree3" [metaKeySelection]=true selectionMode="multiple" [(selection)]="selectedFiles" 
         (onNodeSelect)="nodeSelect($event)" (onNodeUnselect)="nodeUnselect($event)"></p-atree>
     <div>Selected Nodes: <span *ngFor="let file of selectedFiles">{{file.label}}</span></div>
     
     <h3>Multiple Selection with Checkbox</h3>
 	<!--<div style="background-color: red;display:inline-block; width: 400px; height: 400px;">-->
-		<p-atree [value]="filesTree4" selectionMode="checkbox" [(selection)]="selectedFiles2" [(checked)]="checkedFiles2"></p-atree>
+		<p-atree [value]="filesTree4" [metaKeySelection]=true [checkbox]=true selectionMode="multiple" [(selection)]="selectedFiles2" [(checked)]="checkedFiles2"></p-atree>
 		<div>Selected Nodes: <span *ngFor="let file of selectedFiles2">{{file.label}}</span></div>
 		<div>Checked Nodes: <span *ngFor="let file2 of checkedFiles2">{{file2.label}}</span></div>
     <!--</div>-->
