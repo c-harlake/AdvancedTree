@@ -29,6 +29,12 @@ export class AdvancedTreeDemo implements OnInit {
     filesTree9: AdvancedTreeNode[];
     filesTree10: AdvancedTreeNode[];
     filesTree11: AdvancedTreeNode[];
+    filesTree20: AdvancedTreeNode[];
+    filesTree21: AdvancedTreeNode[];
+    filesTree22: AdvancedTreeNode[];
+    filesTree23: AdvancedTreeNode[];
+    filesTree24: AdvancedTreeNode[];
+    filesTree25: AdvancedTreeNode[];
 
     lazyFiles: AdvancedTreeNode[];
 
@@ -43,6 +49,16 @@ export class AdvancedTreeDemo implements OnInit {
 
     selectedFiles2: AdvancedTreeNode[];
     checkedFiles2: AdvancedTreeNode[];
+
+    selectedFile20: AdvancedTreeNode;
+    selectedFiles21: AdvancedTreeNode[];
+    selectedFiles22: AdvancedTreeNode[];
+    selectedFile23: AdvancedTreeNode;
+    selectedFiles24: AdvancedTreeNode[];
+    selectedFiles25: AdvancedTreeNode[];
+    checkedFiles23: AdvancedTreeNode[];
+    checkedFiles24: AdvancedTreeNode[];
+    checkedFiles25: AdvancedTreeNode[];
 
     items: MenuItem[];
 
@@ -63,6 +79,13 @@ export class AdvancedTreeDemo implements OnInit {
         this.nodeService.getFiles().then(files => this.filesTree5 = files);
         this.nodeService.getFiles().then(files => this.filesTree6 = files);
         this.nodeService.getFiles().then(files => this.filesTree7 = files);
+        this.nodeService.getFiles().then(files => this.filesTree20 = files);
+        this.nodeService.getFiles().then(files => this.filesTree21 = files);
+        this.nodeService.getFiles().then(files => this.filesTree22 = files);
+        this.nodeService.getFiles().then(files => this.filesTree23 = files);
+        this.nodeService.getFiles().then(files => this.filesTree24 = files);
+        this.nodeService.getFiles().then(files => this.filesTree25 = files);
+
         this.filesTree8 = [
             {
                 label: 'Backup',

@@ -1,6 +1,6 @@
 <div class="content-section introduction">
     <div>
-        <span class="feature-title">Tree</span>
+        <span class="feature-title">AdvancedTree</span>
         <span>Tree is used to display hierarchical data.</span>
     </div>
 </div>
@@ -15,21 +15,38 @@
     <p-atree [value]="filesTree1" [loading]="loading"></p-atree>
 
     <h3>Single Selection</h3>
-    <p-atree [value]="filesTree2" selectionMode="single" [(selection)]="selectedFile" 
+    <p-atree [value]="filesTree20" selectionMode="single" [(selection)]="selectedFile20" 
         (onNodeSelect)="nodeSelect($event)" (onNodeUnselect)="nodeUnselect($event)"></p-atree>
-    <div style="margin-top:8px">Selected Node: {{selectedFile ? selectedFile.label : 'none'}}</div>
-    
+    <div style="margin-top:8px">Selected Node: {{selectedFile20 ? selectedFile20.label : 'none'}}</div>
+
+    <h3>Multiple Selection</h3>
+    <p-atree [value]="filesTree21" [metaKeySelection]=false selectionMode="multiple" [(selection)]="selectedFiles21" 
+        (onNodeSelect)="nodeSelect($event)" (onNodeUnselect)="nodeUnselect($event)"></p-atree>
+    <div>Selected Nodes: <span *ngFor="let file of selectedFiles21">{{file.label}}</span></div>    
+
     <h3>Multiple Selection with Metakey</h3>
-    <p-atree [value]="filesTree3" [metaKeySelection]=true selectionMode="multiple" [(selection)]="selectedFiles" 
+    <p-atree [value]="filesTree22" [metaKeySelection]=true selectionMode="multiple" [(selection)]="selectedFiles22" 
         (onNodeSelect)="nodeSelect($event)" (onNodeUnselect)="nodeUnselect($event)"></p-atree>
-    <div>Selected Nodes: <span *ngFor="let file of selectedFiles">{{file.label}}</span></div>
+    <div>Selected Nodes: <span *ngFor="let file of selectedFiles22">{{file.label}}</span></div>
+
+    <h3>Checkbox and Single Selection</h3>
+    <p-atree [value]="filesTree23" [checkbox]=true selectionMode="single" [(selection)]="selectedFile23" [(checked)]="checkedFiles23"
+        (onNodeSelect)="nodeSelect($event)" (onNodeUnselect)="nodeUnselect($event)"></p-atree>
+    <div style="margin-top:8px">Selected Node: {{selectedFile23 ? selectedFile23.label : 'none'}}</div>
+	<div>Checked Nodes: <span *ngFor="let file2 of checkedFiles23">{{file2.label}}</span></div>    
+
+    <h3>Checkbox and Multiple Selection</h3>
+    <p-atree [value]="filesTree24" [metaKeySelection]=false [checkbox]=true selectionMode="multiple" [(selection)]="selectedFiles24" [(checked)]="checkedFiles24"
+        (onNodeSelect)="nodeSelect($event)" (onNodeUnselect)="nodeUnselect($event)"></p-atree>
+    <div>Selected Nodes: <span *ngFor="let file of selectedFiles24">{{file.label}}</span></div>     
+    <div>Checked Nodes: <span *ngFor="let file2 of checkedFiles24">{{file2.label}}</span></div>
     
-    <h3>Multiple Selection with Checkbox</h3>
-	<!--<div style="background-color: red;display:inline-block; width: 400px; height: 400px;">-->
-		<p-atree [value]="filesTree4" [metaKeySelection]=true [checkbox]=true selectionMode="multiple" [(selection)]="selectedFiles2" [(checked)]="checkedFiles2"></p-atree>
-		<div>Selected Nodes: <span *ngFor="let file of selectedFiles2">{{file.label}}</span></div>
-		<div>Checked Nodes: <span *ngFor="let file2 of checkedFiles2">{{file2.label}}</span></div>
-    <!--</div>-->
+    <h3>Checkbox and Multiple Selection with Metakey</h3>
+    <p-atree [value]="filesTree25" [metaKeySelection]=true [checkbox]=true selectionMode="multiple" [(selection)]="selectedFiles25" [(checked)]="checkedFiles25"
+        (onNodeSelect)="nodeSelect($event)" (onNodeUnselect)="nodeUnselect($event)"></p-atree>
+	<div>Selected Nodes: <span *ngFor="let file of selectedFiles24">{{file.label}}</span></div>
+	<div>Checked Nodes: <span *ngFor="let file2 of checkedFiles25">{{file2.label}}</span></div>
+
     <h3>Lazy Loading</h3>
     <p-atree [value]="lazyFiles" (onNodeExpand)="nodeExpand($event)" [style]="{'max-height':'200px','overflow':'auto'}"></p-atree>
     
@@ -92,12 +109,12 @@
             <h3>Import</h3>
 <pre>
 <code class="language-typescript" pCode ngNonBindable>
-import &#123;TreeModule,TreeNode&#125; from 'primeng/primeng';
+import &#123;AdvancedTreeModule,AdvancedTreeNode&#125; from 'AdvancedTree';
 </code>
 </pre>
 
             <h3>Getting Started</h3>
-            <p>Tree component requires an array of TreeNode objects as its value. Let's begin with the TreeNode api. Note that all of the properties are optional.</p>
+            <p>AdvancedTree component requires an array of AdvancedTreeNode objects as its value. Let's begin with the AdvancedTreeNode api. Note that all of the properties are optional.</p>
             
             <div class="doc-tablewrapper">
                 <table class="doc-table">
@@ -110,6 +127,12 @@ import &#123;TreeModule,TreeNode&#125; from 'primeng/primeng';
                         </tr>
                     </thead>
                     <tbody>
+                        <tr>
+                            <td>id</td>
+                            <td>number</td>
+                            <td>null</td>
+                            <td>Id of the node.</td>
+                        </tr>                        
                         <tr>
                             <td>label</td>
                             <td>string</td>
@@ -221,7 +244,7 @@ export class NodeService &#123;
     getFiles() &#123;
         return this.http.get('showcase/resources/data/files.json')
                     .toPromise()
-                    .then(res =&gt; &lt;TreeNode[]&gt; res.json().data);
+                    .then(res =&gt; &lt;AdvancedTreeNode[]&gt; res.json().data);
     &#125;
 &#125;
 </code>
@@ -288,9 +311,9 @@ export class NodeService &#123;
 
 <pre>
 <code class="language-typescript" pCode ngNonBindable>
-export class TreeDemoComponent implements OnInit &#123;
+export class AdvancedTreeDemoComponent implements OnInit &#123;
     
-    files: TreeNode[];
+    files: AdvancedTreeNode[];
 
     constructor(private nodeService: NodeService) &#123;&#125;
     
@@ -304,20 +327,20 @@ export class TreeDemoComponent implements OnInit &#123;
                   
 <pre>
 <code class="language-markup" pCode ngNonBindable>
-&lt;p-tree [value]="files"&gt;&lt;/p-tree&gt;
+&lt;p-atree [value]="files"&gt;&lt;/p-atree&gt;
 </code>
 </pre>
 
             <h3>Selection</h3>
-            <p>Tree supports 3 selection methods, single, multiple and checkbox. Selection is enabled by setting selectionMode property and providing a single TreeNode or
-            an array of TreeNodes to reference the selections depending on the selection mode.</p>
+            <p>Tree supports 2 selection methods, single and multiple. Selection is enabled by setting selectionMode property and providing a single AdvancedTreeNode or
+            an array of AdvancedTreeNodes to reference the selections depending on the selection mode.</p>
 <pre>
 <code class="language-typescript" pCode ngNonBindable>
-export class TreeDemoComponent implements OnInit &#123;
+export class AdvancedTreeDemoComponent implements OnInit &#123;
     
-    files: TreeNode[];
+    files: AdvancedTreeNode[];
     
-    selectedFile: TreeNode;
+    selectedFile: AdvancedTreeNode;
 
     constructor(private nodeService: NodeService) &#123;&#125;
     
@@ -330,21 +353,21 @@ export class TreeDemoComponent implements OnInit &#123;
 </pre>
 <pre>
 <code class="language-markup" pCode ngNonBindable>
-&lt;p-tree [value]="files" selectionMode="single" [(selection)]="selectedFile"&gt;&lt;/p-tree&gt;
+&lt;p-atree [value]="files" selectionMode="single" [(selection)]="selectedFile"&gt;&lt;/p-atree&gt;
 </code>
 </pre>
 
-        <p>In multiple mode or checkbox mode, selection property should be an array. In multiple mode, items can either be selected
+        <p>In multiple mode, selection property should be an array. In multiple mode, items can either be selected
         using metaKey or toggled individually depending on the value of metaKeySelection property value which is true by default. On touch enabled
-        devices metaKeySelection is turned off automatically. In checkbox mode, when inititing a tree with preselections, also set partialSelected
+        devices metaKeySelection is turned off automatically. In checkbox mode, when inititing a tree with prechecked, also set partialChecked
         property on node so that minus icon can be displayed when necessary.</p>
 <pre>
 <code class="language-typescript" pCode ngNonBindable>
-    export class TreeDemoComponent implements OnInit &#123;
+    export class AdvancedTreeDemoComponent implements OnInit &#123;
         
-        files: TreeNode[];
+        files: AdvancedTreeNode[];
         
-        selectedFiles: TreeNode[];
+        selectedFiles: AdvancedTreeNode[];
 
         constructor(private nodeService: NodeService) &#123;&#125;
         
@@ -358,33 +381,33 @@ export class TreeDemoComponent implements OnInit &#123;
 
 <pre>
 <code class="language-markup" pCode ngNonBindable>
-&lt;p-tree [value]="files" selectionMode="single" [(selection)]="selectedFiles"&gt;&lt;/p-tree&gt;
+&lt;p-atree [value]="files" selectionMode="single" [(selection)]="selectedFiles"&gt;&lt;/p-atree&gt;
 </code>
 </pre>
 
-            <p>In checkbox mode, selections propagate up and down, if you prefer not to do so, propagation can be turned off by propagateSelectionDown and
-            propagateSelectionUp properties.</p>
+            <p>In checkbox mode, check propagate up and down, if you prefer not to do so, propagation can be turned off by propagateCheckedDown and
+            propagateCheckedUp properties.</p>
 <pre>
 <code class="language-markup" pCode ngNonBindable>
-&lt;p-tree [value]="files" selectionMode="checkbox" [(selection)]="selectedFiles"
-                [propagateSelectionUp]="false" [propagateSelectionDown]="false"&gt;&lt;/p-tree&gt;
+&lt;p-atree [value]="files" checkbox=true selectionMode="multiple" [(selection)]="selectedFiles"
+                [propagateCheckedUp]="false" [propagateCheckedDown]="false"&gt;&lt;/p-atree&gt;
 </code>
 </pre>
 
-            <p>Tree provides onNodeSelect and onNodeUnselect options as callbacks for selection feature.</p>
+            <p>AdvancedTree provides onNodeSelect and onNodeUnselect options as callbacks for selection feature.</p>
 <pre>
 <code class="language-markup" pCode ngNonBindable>
-&lt;p-tree [value]="files" selectionMode="single" [(selection)]="selectedFiles" (onNodeSelect)="nodeSelect($event)"&gt;&lt;/p-tree&gt;
+&lt;p-atree [value]="files" selectionMode="single" [(selection)]="selectedFiles" (onNodeSelect)="nodeSelect($event)"&gt;&lt;/p-atree&gt;
 </code>
 </pre>
 
 <pre>
 <code class="language-typescript" pCode ngNonBindable>
-export class TreeDemoComponent implements OnInit &#123;
+export class AdvancedTreeDemoComponent implements OnInit &#123;
     
-    files: TreeNode[];
+    files: AdvancedTreeNode[];
     
-    selectedFiles: TreeNode[];
+    selectedFiles: AdvancedTreeNode[];
 
     constructor(private nodeService: NodeService) &#123;&#125;
     
@@ -403,43 +426,43 @@ export class TreeDemoComponent implements OnInit &#123;
             <p>Selection of a particular node can be disabled by setting the selectable property of the node to false.</p>
 
             <h3>Icons</h3>
-            <p>Icon of a treenode is defined using the icon property, if you need an icon depending on the expand or collapse state, use
+            <p>Icon of a advancedtreenode is defined using the icon property, if you need an icon depending on the expand or collapse state, use
                 expandedIcon and collapsedIcon instead.</p>
                 
             <h3>Templating</h3>
-            <p>By default label of a treenode is displayed inside a tree node, in case you need to place custom content define a pTemplate that gets 
-                the treenode as an implicit variable. Example below places an input field to create editable treenodes.</p>
+            <p>By default label of a advancedtreenode is displayed inside a tree node, in case you need to place custom content define a pTemplate that gets 
+                the advancedtreenode as an implicit variable. Example below places an input field to create editable advancedtreenode.</p>
 
 <pre>
 <code class="language-markup" pCode ngNonBindable>
-&lt;p-tree [value]="files"&gt;
+&lt;p-atree [value]="files"&gt;
     &lt;ng-template let-node  pTemplate="default"&gt;
         &lt;input [(ngModel)]="node.label" type="text" style="width:100%"&gt;
     &lt;/ng-template&gt;
-&lt;/p-tree&gt;
+&lt;/p-atree&gt;
 </code>
 </pre>
 
-            <p>Multiple templates are supported by matching the type property of the TreeNode with the type of pTemplate. If a node has no type, 
+            <p>Multiple templates are supported by matching the type property of the AdvancedTreeNode with the type of pTemplate. If a node has no type, 
             then default ng-template is used.</p>
 <pre>
 <code class="language-markup" pCode ngNonBindable>
-&lt;p-tree [value]="files"&gt;
+&lt;p-atree [value]="files"&gt;
     &lt;ng-template let-node  pTemplate="picture"&gt;
         &lt;img [attrs.src]="picture.path"&gt;
     &lt;/ng-template&gt;
     &lt;ng-template let-node  pTemplate="default"&gt;
         &lt;input [(ngModel)]="node.label" type="text" style="width:100%"&gt;
     &lt;/ng-template&gt;
-&lt;/p-tree&gt;
+&lt;/p-atree&gt;
 </code>
 </pre>
 
             <h3>ContextMenu</h3>
-            <p>Tree has exclusive integration with context menu created by binding a menu instance to the tree.</p>
+            <p>AdvancedTree has exclusive integration with context menu created by binding a menu instance to the tree.</p>
 <pre>
 <code class="language-markup" pCode ngNonBindable>
-&lt;p-tree [value]="files" selectionMode="single" [(selection)]="selectedFile2" [contextMenu]="cm"&gt;&lt;/p-tree&gt;
+&lt;p-atree [value]="files" selectionMode="single" [(selection)]="selectedFile2" [contextMenu]="cm"&gt;&lt;/p-atree&gt;
 
 &lt;p-contextMenu #cm [model]="items"&gt;&lt;/p-contextMenu&gt;
 </code>
@@ -452,17 +475,17 @@ export class TreeDemoComponent implements OnInit &#123;
             and a remote call can be made to add the children to the expanded node.</p>
 <pre>
 <code class="language-markup" pCode ngNonBindable>
-&lt;p-tree [value]="files" (onNodeExpand)="loadNode($event)"&gt;&lt;/p-tree&gt;
+&lt;p-atree [value]="files" (onNodeExpand)="loadNode($event)"&gt;&lt;/p-atree&gt;
 </code>
 </pre>
 
 <pre>
 <code class="language-typescript" pCode ngNonBindable>
-export class TreeDemoComponent implements OnInit &#123;
+export class AdvancedTreeDemoComponent implements OnInit &#123;
     
-    files: TreeNode[];
+    files: AdvancedTreeNode[];
     
-    selectedFiles: TreeNode[];
+    selectedFiles: AdvancedTreeNode[];
 
     constructor(private nodeService: NodeService) &#123;&#125;
     
@@ -482,7 +505,7 @@ export class TreeDemoComponent implements OnInit &#123;
 </code>
 </pre>
 
-            <p>Assume at ngOnInit tree is initialized with a data like below that has nodes having no actual children but leaf property is set false.</p>
+            <p>Assume at ngOnInit advancedtree is initialized with a data like below that has nodes having no actual children but leaf property is set false.</p>
 <pre>
 <code class="language-javascript" pCode ngNonBindable>
 &#123;
@@ -519,13 +542,13 @@ export class TreeDemoComponent implements OnInit &#123;
             dropping enable droppableNodes property. In addition, import TreeDragDropService and configure it as a provider at your component or module.</p>
 <pre>
 <code class="language-typescript" pCode ngNonBindable>
-import &#123;TreeDragDropService&#125; from 'primeng/primeng';
+import &#123;AdvancedTreeDragDropService&#125; from 'AdvancedTree';
 </code>
 </pre>
         
 <pre>
 <code class="language-markup" pCode ngNonBindable>
-&lt;p-tree [value]="files" draggableNodes="true" droppableNodes="true"&gt;&lt;/p-tree&gt;
+&lt;p-atree [value]="files" draggableNodes="true" droppableNodes="true"&gt;&lt;/p-atree&gt;
 </code>
 </pre>
             <p>Multiple trees can be used in a drag drop operation, in order to add constraints like rejecting drags from a certain tree but allow from another use draggableScope 
@@ -533,18 +556,18 @@ import &#123;TreeDragDropService&#125; from 'primeng/primeng';
             accepts from second tree whereas first tree accepts drops from 3rd tree.</p>
 <pre>
 <code class="language-markup" pCode ngNonBindable>
-&lt;p-tree [value]="files" draggableNodes="true" droppableNodes="true" draggableScope="a" droppableScope="c"&gt;&lt;/p-tree&gt;
-&lt;p-tree [value]="files" draggableNodes="true" droppableNodes="true" draggableScope="b" droppableScope="a"&gt;&lt;/p-tree&gt;
-&lt;p-tree [value]="files" draggableNodes="true" droppableNodes="true" draggableScope="c" droppableScope="b"&gt;&lt;/p-tree&gt;
+&lt;p-atree [value]="files" draggableNodes="true" droppableNodes="true" draggableScope="a" droppableScope="c"&gt;&lt;/p-atree&gt;
+&lt;p-atree [value]="files" draggableNodes="true" droppableNodes="true" draggableScope="b" droppableScope="a"&gt;&lt;/p-atree&gt;
+&lt;p-atree [value]="files" draggableNodes="true" droppableNodes="true" draggableScope="c" droppableScope="b"&gt;&lt;/p-atree&gt;
 </code>
 </pre>
 
             <h3>Loading Status</h3>
-            <p>Tree has a loading property, when enabled a spinner icon is displayed to indicate data load.</p>
+            <p>AdvancedTree has a loading property, when enabled a spinner icon is displayed to indicate data load.</p>
             <p>An optional loadingIcon property can be passed in case you prefer a different icon.</p>
 <pre>
 <code class="language-markup" pCode ngNonBindable>
-&lt;p-tree [value]="files" [loading]="loading"&gt;&lt;/p-tree&gt;
+&lt;p-atree [value]="files" [loading]="loading"&gt;&lt;/p-atree&gt;
 </code>
 </pre>
             
@@ -553,7 +576,7 @@ import &#123;TreeDragDropService&#125; from 'primeng/primeng';
 
 <pre>
 <code class="language-markup" pCode ngNonBindable>
-&lt;p-tree [value]="files" layout="horizontal"&gt;&lt;/p-tree&gt;
+&lt;p-atree [value]="files" layout="horizontal"&gt;&lt;/p-atree&gt;
 </code>
 </pre>
 
@@ -617,12 +640,6 @@ import &#123;TreeDragDropService&#125; from 'primeng/primeng';
                             <td>true</td>
                             <td>Defines how multiple items can be selected, when true metaKey needs to be pressed to select or unselect an item and when set to false selection of each item
                             can be toggled individually. On touch enabled devices, metaKeySelection is turned off automatically.</td>
-                        </tr>
-                        <tr>
-                            <td>propagateSelectionUp</td>
-                            <td>boolean</td>
-                            <td>true</td>
-                            <td>Whether checkbox selections propagate to ancestor nodes.</td>
                         </tr>
                         <tr>
                             <td>propagateSelectionDown</td>
@@ -768,44 +785,44 @@ import &#123;TreeDragDropService&#125; from 'primeng/primeng';
 &lt;p-growl [value]="msgs"&gt;&lt;/p-growl&gt;
 
 &lt;h3 class="first"&gt;Basic&lt;/h3&gt;
-&lt;p-tree [value]="filesTree0"&gt;&lt;/p-tree&gt;
+&lt;p-atree [value]="filesTree0"&gt;&lt;/p-atree&gt;
 
 &lt;h3&gt;Loader&lt;/h3&gt;
-&lt;p-tree [value]="filesTree1" [loading]="loading"&gt;&lt;/p-tree&gt;
+&lt;p-atree [value]="filesTree1" [loading]="loading"&gt;&lt;/p-atree&gt;
 
 &lt;h3&gt;Single Selection&lt;/h3&gt;
-&lt;p-tree [value]="filesTree2" selectionMode="single" [(selection)]="selectedFile" 
-    (onNodeSelect)="nodeSelect($event)" (onNodeUnselect)="nodeUnselect($event)"&gt;&lt;/p-tree&gt;
+&lt;p-atree [value]="filesTree2" selectionMode="single" [(selection)]="selectedFile" 
+    (onNodeSelect)="nodeSelect($event)" (onNodeUnselect)="nodeUnselect($event)"&gt;&lt;/p-atree&gt;
 &lt;div style="margin-top:8px"&gt;Selected Node: &#123;selectedFile ? selectedFile.label : 'none'&#125;&lt;/div&gt;
 
 &lt;h3&gt;Multiple Selection with Metakey&lt;/h3&gt;
-&lt;p-tree [value]="filesTree3" selectionMode="multiple" [(selection)]="selectedFiles" 
-    (onNodeSelect)="nodeSelect($event)" (onNodeUnselect)="nodeUnselect($event)"&gt;&lt;/p-tree&gt;
+&lt;p-atree [value]="filesTree3" selectionMode="multiple" [(selection)]="selectedFiles" 
+    (onNodeSelect)="nodeSelect($event)" (onNodeUnselect)="nodeUnselect($event)"&gt;&lt;/p-atree&gt;
 &lt;div&gt;Selected Nodes: &lt;span *ngFor="let file of selectedFiles"&gt;&#123;file.label&#125; &lt;/span&gt;&lt;/div&gt;
 
 &lt;h3&gt;Multiple Selection with Checkbox&lt;/h3&gt;
-&lt;p-tree [value]="filesTree4" selectionMode="checkbox" [(selection)]="selectedFiles2"&gt;&lt;/p-tree&gt;
+&lt;p-atree [value]="filesTree4" checkbox=true selectionMode="multiple" [(selection)]="selectedFiles2"&gt;&lt;/p-atree&gt;
 &lt;div&gt;Selected Nodes: &lt;span *ngFor="let file of selectedFiles2"&gt;&#123;file.label&#125; &lt;/span&gt;&lt;/div&gt;
 
 &lt;h3&gt;Lazy Loading&lt;/h3&gt;
-&lt;p-tree [value]="lazyFiles" (onNodeExpand)="nodeExpand($event)" [style]="&#123;'max-height':'200px','overflow':'auto'&#125;"&gt;&lt;/p-tree&gt;
+&lt;p-atree [value]="lazyFiles" (onNodeExpand)="nodeExpand($event)" [style]="&#123;'max-height':'200px','overflow':'auto'&#125;"&gt;&lt;/p-atree&gt;
 
 &lt;h3&gt;Template&lt;/h3&gt;
-&lt;p-tree [value]="filesTree5"&gt;
+&lt;p-atree [value]="filesTree5"&gt;
     &lt;ng-template let-node pTemplate="default"&gt;
         &lt;input [(ngModel)]="node.label" type="text" style="width:100%"&gt;
     &lt;/ng-template&gt;
-&lt;/p-tree&gt;
+&lt;/p-atree&gt;
 
 &lt;h3&gt;Context Menu&lt;/h3&gt;
-&lt;p-tree [value]="filesTree6" selectionMode="single" [(selection)]="selectedFile2" [contextMenu]="cm"&gt;&lt;/p-tree&gt;
+&lt;p-atree [value]="filesTree6" selectionMode="single" [(selection)]="selectedFile2" [contextMenu]="cm"&gt;&lt;/p-atree&gt;
 &lt;p-contextMenu #cm [model]="items"&gt;&lt;/p-contextMenu&gt;
 
 &lt;h3&gt;DragDrop&lt;/h3&gt;
 &lt;div class="ui-g ui-fluid"&gt;
     &lt;div class="ui-g-12 ui-md-3"&gt;
         &lt;h4&gt;Files&lt;/h4&gt;
-        &lt;p-tree [value]="filesTree7" draggableNodes="true" droppableNodes="true" dragdropScope="files"&gt;&lt;/p-tree&gt;
+        &lt;p-atree [value]="filesTree7" draggableNodes="true" droppableNodes="true" dragdropScope="files"&gt;&lt;/p-atree&gt;
     &lt;/div&gt;
     
     &lt;div class="ui-g-12 ui-md-1" style="text-align:center"&gt;
@@ -814,7 +831,7 @@ import &#123;TreeDragDropService&#125; from 'primeng/primeng';
     
     &lt;div class="ui-g-12 ui-md-3"&gt;
         &lt;h4&gt;Server 1&lt;/h4&gt;
-        &lt;p-tree [value]="filesTree8" draggableNodes="true" droppableNodes="true" dragdropScope="files"&gt;&lt;/p-tree&gt;
+        &lt;p-atree [value]="filesTree8" draggableNodes="true" droppableNodes="true" dragdropScope="files"&gt;&lt;/p-atree&gt;
     &lt;/div&gt;
     
     &lt;div class="ui-g-12 ui-md-1" style="text-align:center"&gt;
@@ -823,7 +840,7 @@ import &#123;TreeDragDropService&#125; from 'primeng/primeng';
     
     &lt;div class="ui-g-12 ui-md-3"&gt;
         &lt;h4&gt;Server 2&lt;/h4&gt;
-        &lt;p-tree [value]="filesTree9" draggableNodes="true" droppableNodes="true" dragdropScope="other"&gt;&lt;/p-tree&gt;
+        &lt;p-atree [value]="filesTree9" draggableNodes="true" droppableNodes="true" dragdropScope="other"&gt;&lt;/p-atree&gt;
     &lt;/div&gt;
     
     &lt;div class="ui-g-12 ui-md-1"&gt;
@@ -832,50 +849,50 @@ import &#123;TreeDragDropService&#125; from 'primeng/primeng';
 &lt;/div&gt;
 
 &lt;h3&gt;Programatic Tree Expansion&lt;/h3&gt;
-&lt;p-tree #expandingTree [value]="filesTree10"&gt;&lt;/p-tree&gt;
+&lt;p-atree #expandingTree [value]="filesTree10"&gt;&lt;/p-atree&gt;
 &lt;div style="margin-top: 8px"&gt;
     &lt;button pButton type="button" label="Expand all" (click)="expandAll()"&gt;&lt;/button&gt;
     &lt;button pButton type="button" label="Collapse all" (click)="collapseAll()"&gt;&lt;/button&gt;
 &lt;/div&gt;
 
 &lt;h3&gt;Horizontal Tree&lt;/h3&gt;
-&lt;p-tree [value]="filesTree11" layout="horizontal" selectionMode="single" [(selection)]="selectedFile3" &gt;&lt;/p-tree&gt;
+&lt;p-atree [value]="filesTree11" layout="horizontal" selectionMode="single" [(selection)]="selectedFile3" &gt;&lt;/p-atree&gt;
 &lt;div style="margin-top:8px"&gt;Selected Node: &#123;selectedFile3 ? selectedFile3.label : 'none'&#125;&lt;/div&gt;
 </code>
 </pre>
 
 <pre>
 <code class="language-typescript" pCode ngNonBindable>
-export class TreeDemo implements OnInit &#123;
+export class AdvancedTreeDemo implements OnInit &#123;
     
     msgs: Message[];
 
     @ViewChild('expandingTree')
     expandingTree: Tree;
 
-    filesTree1: TreeNode[];
-    filesTree2: TreeNode[];
-    filesTree3: TreeNode[];
-    filesTree4: TreeNode[];
-    filesTree5: TreeNode[];
-    filesTree6: TreeNode[];
-    filesTree7: TreeNode[];
-    filesTree8: TreeNode[];
-    filesTree9: TreeNode[];
-    filesTree10: TreeNode[];
-    filesTree11: TreeNode[];
+    filesTree1: AdvancedTreeNode[];
+    filesTree2: AdvancedTreeNode[];
+    filesTree3: AdvancedTreeNode[];
+    filesTree4: AdvancedTreeNode[];
+    filesTree5: AdvancedTreeNode[];
+    filesTree6: AdvancedTreeNode[];
+    filesTree7: AdvancedTreeNode[];
+    filesTree8: AdvancedTreeNode[];
+    filesTree9: AdvancedTreeNode[];
+    filesTree10: AdvancedTreeNode[];
+    filesTree11: AdvancedTreeNode[];
     
-    lazyFiles: TreeNode[];
+    lazyFiles: AdvancedTreeNode[];
     
-    selectedFile: TreeNode;
+    selectedFile: AdvancedTreeNode;
     
-    selectedFile2: TreeNode;
+    selectedFile2: AdvancedTreeNode;
     
-    selectedFile3: TreeNode;
+    selectedFile3: AdvancedTreeNode;
     
-    selectedFiles: TreeNode[];
+    selectedFiles: AdvancedTreeNode[];
     
-    selectedFiles2: TreeNode[];
+    selectedFiles2: AdvancedTreeNode[];
     
     items: MenuItem[];
     
@@ -971,7 +988,7 @@ export class TreeDemo implements OnInit &#123;
         &#125; );
     &#125;
     
-    private expandRecursive(node:TreeNode, isExpand:boolean)&#123;
+    private expandRecursive(node:AdvancedTreeNode, isExpand:boolean)&#123;
         node.expanded = isExpand;
         if(node.children)&#123;
             node.children.forEach( childNode => &#123;

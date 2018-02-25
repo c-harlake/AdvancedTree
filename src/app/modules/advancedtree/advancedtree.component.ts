@@ -377,7 +377,7 @@ export class AdvancedTree implements OnInit, AfterContentInit, OnDestroy, Advanc
 
     @Input() metaKeySelection: boolean = true;
 
-    @Input() propagateSelectionUp: boolean = false;
+    // @Input() propagateSelectionUp: boolean = false;
 
     @Input() propagateSelectionDown: boolean = true;
 
@@ -501,110 +501,88 @@ export class AdvancedTree implements OnInit, AfterContentInit, OnDestroy, Advanc
             if (node.selectable === false) {
                 return;
             }
-
             let index = this.findIndexInSelection(node);
             let selected = (index >= 0);
+            let metaSelection = this.nodeTouched ? false : this.metaKeySelection;
+            let metaKey = (event.metaKey || event.ctrlKey);
 
-            // if (this.isCheckboxMode()) {
-            //     if (selected) {
-            //         if (this.propagateSelectionDown) {
-            //             this.propagateDown(node, false);
-            //         }
-            //         else {
-            //             this.selection = this.selection.filter((val, i) => i !== index);
-            //         }
-            //         if (this.propagateSelectionUp && node.parent) {
-            //             this.propagateUp(node.parent, false);
-            //         }
-
-            //         this.selectionChange.emit(this.selection);
-            //         this.onNodeUnselect.emit({originalEvent: event, node: node});
-            //     }
-            //     else {
-            //         if (this.propagateSelectionDown) {
-            //             this.propagateDown(node, true);
-            //         }
-            //         else {
-            //             this.selection = [...this.selection || [], node];
-            //         }
-            //         if (this.propagateSelectionUp && node.parent) {
-            //             this.propagateUp(node.parent, true);
-            //         }
-
-            //         this.selectionChange.emit(this.selection);
-            //         this.onNodeSelect.emit({originalEvent: event, node: node});
-            //     }
-            // }
-            // else {
-                let metaSelection = this.nodeTouched ? false : this.metaKeySelection;
-
-                if (metaSelection) {
-                    let metaKey = (event.metaKey || event.ctrlKey);
-
-                    if (selected && metaKey) {
-                        if (this.isSingleSelectionMode()) {
-                            this.selectionChange.emit(null);
-                        }
-                        else {
-                            if (this.propagateSelectionDown) {
-                                this.propagateDown(node, false);
-                            }
-                            else {
-                                this.selection = this.selection.filter((val, i) => i !== index);
-                            }
-                            if (this.propagateSelectionUp && node.parent) {
-                                this.propagateUp(node.parent, false);
-                            }
-                            // this.selection = this.selection.filter((val, i) => i !== index);
-                            this.selectionChange.emit(this.selection);
-                        }
-
-                        this.onNodeUnselect.emit({originalEvent: event, node: node});
-                    }
-                    else {
-                        if (this.isSingleSelectionMode()) {
-                            this.selectionChange.emit(node);
-                        }
-                        else if (this.isMultipleSelectionMode()) {
-                            this.selection = (!metaKey) ? [] : this.selection || [];
-                            this.selection = [...this.selection, node];
-                            if (this.propagateSelectionDown) {
-                                this.propagateDown(node, true);
-                            }
-                            if (this.propagateSelectionUp && node.parent) {
-                                this.propagateUp(node.parent, false);
-                            }
-                            this.selectionChange.emit(this.selection);
-                        }
-
-                        this.onNodeSelect.emit({originalEvent: event, node: node});
-                    }
-                }
-                else {
-                    if (this.isSingleSelectionMode()) {
-                        if (selected) {
-                            this.selection = null;
-                            this.onNodeUnselect.emit({originalEvent: event, node: node});
-                        }
-                        else {
-                            this.selection = node;
-                            this.onNodeSelect.emit({originalEvent: event, node: node});
-                        }
-                    }
-                    else {
-                        if (selected) {
-                            this.selection = this.selection.filter((val, i) => i !== index);
-                            this.onNodeUnselect.emit({originalEvent: event, node: node});
-                        }
-                        else {
-                            this.selection = [...this.selection || [], node];
-                            this.onNodeSelect.emit({originalEvent: event, node: node});
-                        }
-                    }
-
+            if ( selected ) {
+                // node already selected
+                if ( this.isSingleSelectionMode() ) {
+                    // single selection, just clear selection
+                    this.selection = [];
                     this.selectionChange.emit(this.selection);
                 }
-            // }
+                else {
+                    if ( metaSelection ) {
+                        let metaKey = (event.metaKey || event.ctrlKey);
+                        if ( metaKey ) {
+                            // metakey multiselection, remove node from selection
+                            this.selection = this.selection.filter((val, i) => i !== index);
+                            if ( this.propagateSelectionDown ) {
+                                this.propagateDown(node, false);
+                            }
+                            this.selectionChange.emit(this.selection);
+                        }
+                        else {
+                            // multiselection, just keep this node selected
+                            this.selection = [...[], node];
+                            if ( this.propagateSelectionDown ) {
+                                this.propagateDown(node, true);
+                            }
+                            this.selectionChange.emit(this.selection);
+                        }
+                    }
+                    else {
+                        // multiselection,remove node from selection
+                        this.selection = this.selection.filter((val, i) => i !== index);
+                        if ( this.propagateSelectionDown ) {
+                            this.propagateDown(node, false);
+                        }
+                        this.selectionChange.emit(this.selection);
+                    }
+                }
+            }
+            else {
+                // node not selected
+                if ( this.isSingleSelectionMode() ) {
+                    // single selection, just set node as selection
+                    this.selection = node;
+                    this.selectionChange.emit(this.selection);
+                }
+                else {
+                    if ( metaSelection ) {
+                        let metaKey = (event.metaKey || event.ctrlKey);
+                        if ( metaKey ) {
+                            // metakey multiselection, add node to selection
+                            this.selection = this.selection || [];
+                            this.selection = [...this.selection, node];
+                            if ( this.propagateSelectionDown ) {
+                                this.propagateDown(node, true);
+                            }
+                            this.selectionChange.emit(this.selection);                         
+                        }
+                        else {
+                            // metakey multiselection, just set node as selected
+                            this.selection = [];
+                            this.selection = [...this.selection, node];
+                            if ( this.propagateSelectionDown ) {
+                                this.propagateDown(node, true);
+                            }
+                            this.selectionChange.emit(this.selection);
+                        }
+                    }
+                    else {
+                        // multiselection, just add node to selection
+                        this.selection = this.selection || [];
+                        this.selection = [...this.selection, node];
+                        if ( this.propagateSelectionDown ) {
+                            this.propagateDown(node, true);
+                        }
+                        this.selectionChange.emit(this.selection);               
+                    }
+                }
+            }
         }
 
         this.nodeTouched = false;
