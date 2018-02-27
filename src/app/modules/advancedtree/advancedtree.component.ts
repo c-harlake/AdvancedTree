@@ -512,10 +512,10 @@ export class AdvancedTree implements OnInit, AfterContentInit, OnDestroy, Advanc
                     // single selection, just clear selection
                     this.selection = [];
                     this.selectionChange.emit(this.selection);
+                    this.onNodeUnselect.emit({originalEvent: event, node: node});
                 }
                 else {
                     if ( metaSelection ) {
-                        let metaKey = (event.metaKey || event.ctrlKey);
                         if ( metaKey ) {
                             // metakey multiselection, remove node from selection
                             this.selection = this.selection.filter((val, i) => i !== index);
@@ -523,6 +523,7 @@ export class AdvancedTree implements OnInit, AfterContentInit, OnDestroy, Advanc
                                 this.propagateDown(node, false);
                             }
                             this.selectionChange.emit(this.selection);
+                            this.onNodeUnselect.emit({originalEvent: event, node: node});
                         }
                         else {
                             // multiselection, just keep this node selected
@@ -531,6 +532,7 @@ export class AdvancedTree implements OnInit, AfterContentInit, OnDestroy, Advanc
                                 this.propagateDown(node, true);
                             }
                             this.selectionChange.emit(this.selection);
+                            this.onNodeSelect.emit({originalEvent: event, node: node});
                         }
                     }
                     else {
@@ -540,6 +542,7 @@ export class AdvancedTree implements OnInit, AfterContentInit, OnDestroy, Advanc
                             this.propagateDown(node, false);
                         }
                         this.selectionChange.emit(this.selection);
+                        this.onNodeUnselect.emit({originalEvent: event, node: node});
                     }
                 }
             }
@@ -549,10 +552,10 @@ export class AdvancedTree implements OnInit, AfterContentInit, OnDestroy, Advanc
                     // single selection, just set node as selection
                     this.selection = node;
                     this.selectionChange.emit(this.selection);
+                    this.onNodeSelect.emit({originalEvent: event, node: node});
                 }
                 else {
                     if ( metaSelection ) {
-                        let metaKey = (event.metaKey || event.ctrlKey);
                         if ( metaKey ) {
                             // metakey multiselection, add node to selection
                             this.selection = this.selection || [];
@@ -560,7 +563,8 @@ export class AdvancedTree implements OnInit, AfterContentInit, OnDestroy, Advanc
                             if ( this.propagateSelectionDown ) {
                                 this.propagateDown(node, true);
                             }
-                            this.selectionChange.emit(this.selection);                         
+                            this.selectionChange.emit(this.selection);
+                            this.onNodeSelect.emit({originalEvent: event, node: node});
                         }
                         else {
                             // metakey multiselection, just set node as selected
@@ -570,6 +574,7 @@ export class AdvancedTree implements OnInit, AfterContentInit, OnDestroy, Advanc
                                 this.propagateDown(node, true);
                             }
                             this.selectionChange.emit(this.selection);
+                            this.onNodeSelect.emit({originalEvent: event, node: node});
                         }
                     }
                     else {
@@ -579,7 +584,8 @@ export class AdvancedTree implements OnInit, AfterContentInit, OnDestroy, Advanc
                         if ( this.propagateSelectionDown ) {
                             this.propagateDown(node, true);
                         }
-                        this.selectionChange.emit(this.selection);               
+                        this.selectionChange.emit(this.selection);
+                        this.onNodeSelect.emit({originalEvent: event, node: node});
                     }
                 }
             }
