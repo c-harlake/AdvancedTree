@@ -928,6 +928,36 @@ export class AdvancedTree implements OnInit, AfterContentInit, OnDestroy, Advanc
       return this.el.nativeElement.children[0];
     }
 
+    expandToNode(node: AdvancedTreeNode) {
+        const pathToNode: AdvancedTreeNode[] = this.findPathToNode(node);
+        if (pathToNode) {
+            pathToNode.forEach( node => node.expanded = true );
+        }
+    }
+
+    findPathToNode(node: AdvancedTreeNode): AdvancedTreeNode[] {
+        return AdvancedTree.findPathToNodeRecursive(node, this.value);
+    }
+
+    private static findPathToNodeRecursive(searchingFor: AdvancedTreeNode, searchingIn: AdvancedTreeNode[]): AdvancedTreeNode[] {
+        if (!searchingIn || searchingIn.length == 0) {
+            return undefined;
+        }
+
+        for (let i = 0; i < searchingIn.length; i++) {
+            if (searchingFor == searchingIn[i]) {
+                return [searchingIn[i]];
+            }
+            const path: AdvancedTreeNode[] = AdvancedTree.findPathToNodeRecursive(searchingFor, searchingIn[i].children);
+            if (path) {
+                path.unshift(searchingIn[i]);
+                return path;
+            }
+        }
+
+        return undefined;
+    }
+
     ngOnDestroy() {
         if (this.dragStartSubscription) {
             this.dragStartSubscription.unsubscribe();
