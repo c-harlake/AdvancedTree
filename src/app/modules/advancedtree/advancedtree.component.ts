@@ -339,6 +339,8 @@ export class AdvancedTree implements OnInit, AfterContentInit, OnDestroy, Advanc
 
     @Input() checked: any;
 
+    @Input() partialchecked: any;
+
     @Output() selectionChange: EventEmitter<any> = new EventEmitter();
 
     @Output() checkedChange: EventEmitter<any> = new EventEmitter();
