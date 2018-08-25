@@ -60,6 +60,8 @@ export class AdvancedTreeDemo implements OnInit {
     checkedFiles24: AdvancedTreeNode[];
     checkedFiles25: AdvancedTreeNode[];
 
+    partialCheckedNodes: AdvancedTreeNode[] = [];
+
     items: MenuItem[];
 
     loading: boolean;
@@ -83,7 +85,10 @@ export class AdvancedTreeDemo implements OnInit {
         this.nodeService.getFiles().then(files => this.filesTree21 = files);
         this.nodeService.getFiles().then(files => this.filesTree22 = files);
         this.nodeService.getFiles().then(files => this.filesTree23 = files);
-        this.nodeService.getFiles().then(files => this.filesTree24 = files);
+        this.nodeService.getFiles().then(files => {
+            this.filesTree24 = files;
+            this.partialCheckedNodes.push(this.filesTree24[1]);
+        });
         this.nodeService.getFiles().then(files => this.filesTree25 = files);
 
         this.filesTree8 = [

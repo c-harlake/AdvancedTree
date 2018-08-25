@@ -36,10 +36,11 @@
 	<div>Checked Nodes: <span *ngFor="let file2 of checkedFiles23">{{file2.label}}</span></div>    
 
     <h3>Checkbox and Multiple Selection</h3>
-    <p-atree [value]="filesTree24" [metaKeySelection]=false [checkbox]=true selectionMode="multiple" [(selection)]="selectedFiles24" [(checked)]="checkedFiles24"
+    <p-atree [value]="filesTree24" [metaKeySelection]=false [checkbox]=true selectionMode="multiple" [(selection)]="selectedFiles24" [(checked)]="checkedFiles24" [(partialchecked)]="partialCheckedNodes"
         (onNodeSelect)="nodeSelect($event)" (onNodeUnselect)="nodeUnselect($event)"></p-atree>
     <div>Selected Nodes: <span *ngFor="let file of selectedFiles24">{{file.label}}</span></div>     
     <div>Checked Nodes: <span *ngFor="let file2 of checkedFiles24">{{file2.label}}</span></div>
+    <div>PartialChecked Nodes: <span *ngFor="let file3 of partialCheckedNodes">{{file3.label}}</span></div>
     
     <h3>Checkbox and Multiple Selection with Metakey</h3>
     <p-atree [value]="filesTree25" [metaKeySelection]=true [checkbox]=true selectionMode="multiple" [(selection)]="selectedFiles25" [(checked)]="checkedFiles25"

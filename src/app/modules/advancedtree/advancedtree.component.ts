@@ -513,6 +513,10 @@ export class AdvancedTree implements OnInit, AfterContentInit, OnDestroy, Advanc
                         this.propagateChkDown(node, true);
                     }
                     else {
+                        let idx = this.findIndexInPartialChecked(node);
+                        if ( idx > -1 ) {
+                            this.partialchecked.splice(idx, 1);
+                        }
                         this.checked = [...this.checked || [], node];
                     }
                     if (this.propagateCheckedUp && node.parent) {
