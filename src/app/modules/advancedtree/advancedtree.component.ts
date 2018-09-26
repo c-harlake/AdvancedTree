@@ -487,7 +487,7 @@ export class AdvancedTree implements OnInit, AfterContentInit, OnDestroy, Advanc
             return;
         }
         else if (eventTarget.className && eventTarget.className.indexOf('ui-chkbox') === 0) {
-            if (node.selectable === false) {
+            if (node.checkable === false) {
                 return;
             }
 
