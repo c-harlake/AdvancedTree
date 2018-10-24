@@ -564,6 +564,8 @@ export class AdvancedTree implements OnInit, AfterContentInit, OnDestroy, Advanc
                             // if ( this.propagateSelectionDown ) {
                             //     this.propagateDown(node, true);
                             // }
+                            // this.selectionChange.emit(this.selection);
+                            // this.onNodeSelect.emit({originalEvent: event, node: node});
                             // ++++ explorer like behaviour end ++++
 
                             // ++++ novo like behaviour ++++
@@ -571,9 +573,9 @@ export class AdvancedTree implements OnInit, AfterContentInit, OnDestroy, Advanc
                             if ( this.propagateSelectionDown ) {
                                 this.propagateDown(node, false);
                             }
-                            // ++++ novo like behaviour end ++++
                             this.selectionChange.emit(this.selection);
-                            this.onNodeSelect.emit({originalEvent: event, node: node});
+                            this.onNodeUnselect.emit({originalEvent: event, node: node});
+                            // ++++ novo like behaviour end ++++
                         }
                     }
                     else {
