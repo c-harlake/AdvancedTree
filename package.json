@@ -1,6 +1,6 @@
 {
   "name": "advanced-tree",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "license": "MIT",
   "description": "The AdvancedTreeModule is an extension to the tree module from PrimeNG.",
   "keywords": [
@@ -29,20 +29,11 @@
   },
   "private": false,
   "dependencies": {
-    "@angular/core": "^7.0.3",
-    "core-js": "^2.4.1",
-    "font-awesome": "^4.7.0",
-    "primeng": "^7.0.0-beta.1",
-    "rxjs": "^6.3.3",
-    "tsickle": "^0.33.1",
-    "tslib": "^1.9.3",
-    "rxjs-compat": "^6.0.0-rc.0"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "~0.10.0",
     "@angular/animations": "^7.0.3",
     "@angular/cli": "^7.0.4",
-    "@angular/common": "^7.0.3",
     "@angular/compiler": "^7.0.3",
     "@angular/compiler-cli": "^7.0.3",
     "@angular/forms": "^7.0.3",
@@ -69,5 +60,17 @@
     "tslint": "~5.11.0",
     "typescript": "^3.1.6",
     "zone.js": "^0.8.4"
+  },
+  "peerDependency": {
+    "@angular/core": "^7.0.3",
+    "@angular/common": "^7.0.3",
+    "core-js": "^2.4.1",
+    "font-awesome": "^4.7.0",
+    "node-sass": "^4.10.0",
+    "primeng": "^7.0.0-beta.1",
+    "rxjs": "^6.3.3",
+    "rxjs-compat": "^6.0.0-rc.0",
+    "tsickle": "^0.33.1",
+    "tslib": "^1.9.3"
   }
 }
