@@ -10,36 +10,46 @@ import {AdvancedTreeDragDropService} from '../common/advancedtreedragdropservice
 import {Subscription} from 'rxjs/Subscription';
 
 @Component({
+    // tslint:disable-next-line:component-selector
     selector: 'p-atreeNode',
     template: `
         <ng-template [ngIf]="node">
-            <li *ngIf="tree.droppableNodes" class="ui-treenode-droppoint" [ngClass]="{'ui-treenode-droppoint-active ui-state-highlight':draghoverPrev}"
-            (drop)="onDropPoint($event,-1)" (dragover)="onDropPointDragOver($event)" (dragenter)="onDropPointDragEnter($event,-1)" (dragleave)="onDropPointDragLeave($event)"></li>
+            <li *ngIf="tree.droppableNodes" class="ui-treenode-droppoint"
+             [ngClass]="{'ui-treenode-droppoint-active ui-state-highlight':draghoverPrev}"
+            (drop)="onDropPoint($event,-1)" (dragover)="onDropPointDragOver($event)" (dragenter)="onDropPointDragEnter($event,-1)"
+             (dragleave)="onDropPointDragLeave($event)"></li>
             <li *ngIf="!tree.horizontal" [ngClass]="['ui-treenode',node.styleClass||'', isLeaf() ? 'ui-treenode-leaf': '']">
-                <div class="ui-treenode-content" (click)="onNodeClick($event)" (contextmenu)="onNodeRightClick($event)" (touchend)="onNodeTouchEnd()"
-                    (drop)="onDropNode($event)" (dragover)="onDropNodeDragOver($event)" (dragenter)="onDropNodeDragEnter($event)" (dragleave)="onDropNodeDragLeave($event)"
-                    [ngClass]="{'ui-treenode-selectable':tree.selectionMode && node.selectable !== false,'ui-treenode-dragover':draghoverNode, 'ui-treenode-content-selected':isSelected()}" [draggable]="tree.draggableNodes" (dragstart)="onDragStart($event)" (dragend)="onDragStop($event)">
+                <div class="ui-treenode-content" (click)="onNodeClick($event)" (contextmenu)="onNodeRightClick($event)"
+                 (touchend)="onNodeTouchEnd()" (drop)="onDropNode($event)" (dragover)="onDropNodeDragOver($event)"
+                  (dragenter)="onDropNodeDragEnter($event)" (dragleave)="onDropNodeDragLeave($event)"
+                    [ngClass]="{'ui-treenode-selectable':tree.selectionMode && node.selectable !== false,
+                    'ui-treenode-dragover':draghoverNode, 'ui-treenode-content-selected':isSelected()}" [draggable]="tree.draggableNodes"
+                     (dragstart)="onDragStart($event)" (dragend)="onDragStop($event)">
                     <span class="ui-tree-toggler  fa fa-fw" [ngClass]="{'fa-caret-right':!node.expanded,'fa-caret-down':node.expanded}"
                             (click)="toggle($event)"></span
                     ><div class="ui-chkbox" *ngIf="tree.checkbox"><div class="ui-chkbox-box ui-widget ui-corner-all ui-state-default">
-                        <span class="ui-chkbox-icon ui-clickable fa" 
-                            [ngClass]="{'fa-check':isChecked(),'fa-minus':isPartialChecked()}"></span></div></div
+                        <span class="ui-chkbox-icon ui-clickable fa"
+                         [ngClass]="{'fa-check':isChecked(),'fa-minus':isPartialChecked()}"></span></div></div
                     ><span [class]="getIcon()" *ngIf="node.icon||node.expandedIcon||node.collapsedIcon"></span
-                    ><span class="ui-treenode-label ui-corner-all" 
-                        [ngClass]="{'ui-state-highlight':isSelected()}">
+                    ><span class="ui-treenode-label ui-corner-all"
+                         [ngClass]="{'ui-state-highlight':isSelected()}">
                             <span *ngIf="!tree.getTemplateForNode(node)" id="{{node.id}}">{{node.label}}</span>
                             <span *ngIf="tree.getTemplateForNode(node)">
                                 <ng-container *ngTemplateOutlet="tree.getTemplateForNode(node); context: {$implicit: node}"></ng-container>
                             </span>
                     </span>
                 </div>
-                <ul class="ui-treenode-children" style="display: none;" *ngIf="node.children && node.expanded" [style.display]="node.expanded ? 'block' : 'none'">
-                    <p-atreeNode *ngFor="let childNode of node.children;let firstChild=first;let lastChild=last; let index=index" [node]="childNode" [parentNode]="node"
-                        [firstChild]="firstChild" [lastChild]="lastChild" [index]="index"></p-atreeNode>
+                <ul class="ui-treenode-children" style="display: none;" *ngIf="node.children && node.expanded"
+                 [style.display]="node.expanded ? 'block' : 'none'">
+                    <p-atreeNode *ngFor="let childNode of node.children;let firstChild=first;let lastChild=last;
+                     let index=index" [node]="childNode" [parentNode]="node"
+                      [firstChild]="firstChild" [lastChild]="lastChild" [index]="index"></p-atreeNode>
                 </ul>
             </li>
-            <li *ngIf="tree.droppableNodes&&lastChild" class="ui-treenode-droppoint" [ngClass]="{'ui-treenode-droppoint-active ui-state-highlight':draghoverNext}"
-            (drop)="onDropPoint($event,1)" (dragover)="onDropPointDragOver($event)" (dragenter)="onDropPointDragEnter($event,1)" (dragleave)="onDropPointDragLeave($event)"></li>
+            <li *ngIf="tree.droppableNodes&&lastChild" class="ui-treenode-droppoint"
+             [ngClass]="{'ui-treenode-droppoint-active ui-state-highlight':draghoverNext}"
+            (drop)="onDropPoint($event,1)" (dragover)="onDropPointDragOver($event)" (dragenter)="onDropPointDragEnter($event,1)"
+             (dragleave)="onDropPointDragLeave($event)"></li>
             <table *ngIf="tree.horizontal" [class]="node.styleClass">
                 <tbody>
                     <tr>
@@ -56,24 +66,29 @@ import {Subscription} from 'rxjs/Subscription';
                             </table>
                         </td>
                         <td class="ui-treenode" [ngClass]="{'ui-treenode-collapsed':!node.expanded}">
-                            <div class="ui-treenode-content ui-state-default ui-corner-all" 
-                                [ngClass]="{'ui-treenode-selectable':tree.selectionMode,'ui-state-highlight':isSelected()}" (click)="onNodeClick($event)" (contextmenu)="onNodeRightClick($event)"
+                            <div class="ui-treenode-content ui-state-default ui-corner-all"
+                             [ngClass]="{'ui-treenode-selectable':tree.selectionMode,'ui-state-highlight':isSelected()}"
+                                 (click)="onNodeClick($event)" (contextmenu)="onNodeRightClick($event)"
                                 (touchend)="onNodeTouchEnd()">
-                                <span class="ui-tree-toggler fa fa-fw" [ngClass]="{'fa-plus':!node.expanded,'fa-minus':node.expanded}" *ngIf="!isLeaf()"
+                                <span class="ui-tree-toggler fa fa-fw" [ngClass]="{'fa-plus':!node.expanded,'fa-minus':node.expanded}"
+                                 *ngIf="!isLeaf()"
                                         (click)="toggle($event)"></span
                                 ><span [class]="getIcon()" *ngIf="node.icon||node.expandedIcon||node.collapsedIcon"></span
                                 ><span class="ui-treenode-label ui-corner-all">
                                         <span *ngIf="!tree.getTemplateForNode(node)" id="{{node.id}}">{{node.label}}</span>
                                         <span *ngIf="tree.getTemplateForNode(node)">
-                                        <ng-container *ngTemplateOutlet="tree.getTemplateForNode(node); context: {$implicit: node}"></ng-container>
+                                        <ng-container *ngTemplateOutlet="tree.getTemplateForNode(node);
+                                         context: {$implicit: node}"></ng-container>
                                         </span>
                                 </span>
                             </div>
                         </td>
-                        <td class="ui-treenode-children-container" *ngIf="node.children && node.expanded" [style.display]="node.expanded ? 'table-cell' : 'none'">
+                        <td class="ui-treenode-children-container" *ngIf="node.children && node.expanded"
+                         [style.display]="node.expanded ? 'table-cell' : 'none'">
                             <div class="ui-treenode-children">
-                                <p-atreeNode *ngFor="let childNode of node.children;let firstChild=first;let lastChild=last;" [node]="childNode" 
-                                        [firstChild]="firstChild" [lastChild]="lastChild"></p-atreeNode>
+                                <p-atreeNode *ngFor="let childNode of node.children;let firstChild=first;
+                                let lastChild=last;" [node]="childNode"
+                                         [firstChild]="firstChild" [lastChild]="lastChild"></p-atreeNode>
                             </div>
                         </td>
                     </tr>
@@ -82,9 +97,10 @@ import {Subscription} from 'rxjs/Subscription';
         </ng-template>
     `
 })
+// tslint:disable-next-line:component-class-suffix
 export class UIAdvancedTreeNode implements OnInit {
 
-    static ICON_CLASS: string = 'ui-treenode-icon fa fa-fw';
+    static ICON_CLASS = 'ui-treenode-icon fa fa-fw';
 
     @Input() node: AdvancedTreeNode;
 
@@ -173,7 +189,8 @@ export class UIAdvancedTreeNode implements OnInit {
             let dropIndex = this.index;
 
             if (position < 0) {
-                dropIndex = (this.tree.dragNodeSubNodes === newNodeList) ? ((this.tree.dragNodeIndex > this.index) ? this.index : this.index - 1) : this.index;
+                dropIndex = (this.tree.dragNodeSubNodes === newNodeList) ?
+                 ((this.tree.dragNodeIndex > this.index) ? this.index : this.index - 1) : this.index;
                 newNodeList.splice(dropIndex, 0, dragNode);
             }
             else {
@@ -222,7 +239,7 @@ export class UIAdvancedTreeNode implements OnInit {
 
     onDragStart(event) {
         if (this.tree.draggableNodes && this.node.draggable !== false) {
-            event.dataTransfer.setData("text", "data");
+            event.dataTransfer.setData('text', 'data');
 
             this.tree.dragDropService.startDrag({
                 tree: this,
@@ -287,7 +304,7 @@ export class UIAdvancedTreeNode implements OnInit {
     }
 
     onDropNodeDragEnter(event) {
-        if (this.tree.droppableNodes && this.node.droppable !== false 
+        if (this.tree.droppableNodes && this.node.droppable !== false
                   && this.tree.allowDrop(this.tree.dragNode, this.node, this.tree.dragNodeScope)) {
             this.draghoverNode = true;
         }
@@ -305,21 +322,24 @@ export class UIAdvancedTreeNode implements OnInit {
 }
 
 @Component({
+    // tslint:disable-next-line:component-selector
     selector: 'p-atree',
     template: `
-        <div [ngClass]="{'ui-tree ui-widget ui-widget-content ui-corner-all':true,'ui-tree-selectable':selectionMode,'ui-treenode-dragover':dragHover,'ui-tree-loading': loading}" [ngStyle]="style" [class]="styleClass" *ngIf="!horizontal"
+        <div [ngClass]="{'ui-tree ui-widget ui-widget-content ui-corner-all':true,'ui-tree-selectable':selectionMode,
+        'ui-treenode-dragover':dragHover,'ui-tree-loading': loading}" [ngStyle]="style" [class]="styleClass" *ngIf="!horizontal"
             (drop)="onDrop($event)" (dragover)="onDragOver($event)" (dragenter)="onDragEnter($event)" (dragleave)="onDragLeave($event)">
             <div class="ui-tree-loading-mask ui-widget-overlay" *ngIf="loading"></div>
             <div class="ui-tree-loading-content" *ngIf="loading">
                 <i [class]="'fa fa-spin fa-2x ' + loadingIcon"></i>
             </div>
             <ul class="ui-tree-container" *ngIf="value">
-                <p-atreeNode *ngFor="let node of value;let firstChild=first;let lastChild=last; let index=index" [node]="node" 
+                <p-atreeNode *ngFor="let node of value;let firstChild=first;let lastChild=last; let index=index" [node]="node"
                 [firstChild]="firstChild" [lastChild]="lastChild" [index]="index"></p-atreeNode>
             </ul>
             <div class="ui-tree-empty-message" *ngIf="!loading && !value">{{emptyMessage}}</div>
         </div>
-        <div [ngClass]="{'ui-tree ui-tree-horizontal ui-widget ui-widget-content ui-corner-all':true,'ui-tree-selectable':selectionMode}"  [ngStyle]="style" [class]="styleClass" *ngIf="horizontal">
+        <div [ngClass]="{'ui-tree ui-tree-horizontal ui-widget ui-widget-content ui-corner-all':true,'ui-tree-selectable':selectionMode}"
+          [ngStyle]="style" [class]="styleClass" *ngIf="horizontal">
             <div class="ui-tree-loading ui-widget-overlay" *ngIf="loading"></div>
             <div class="ui-tree-loading-content" *ngIf="loading">
                 <i [class]="'fa fa-spin fa-2x ' + loadingIcon"></i>
@@ -331,13 +351,14 @@ export class UIAdvancedTreeNode implements OnInit {
         </div>
     `
 })
+// tslint:disable-next-line:component-class-suffix
 export class AdvancedTree implements OnInit, AfterContentInit, OnDestroy, AdvancedBlockableUI {
 
     @Input() value: AdvancedTreeNode[];
 
     @Input() selectionMode: string;
 
-    @Input() checkbox: boolean = false;
+    @Input() checkbox = false;
 
     @Input() selection: any;
 
@@ -373,7 +394,7 @@ export class AdvancedTree implements OnInit, AfterContentInit, OnDestroy, Advanc
 
     @Input() contextMenu: any;
 
-    @Input() layout: string = 'vertical';
+    @Input() layout = 'vertical';
 
     @Input() draggableScope: any;
 
@@ -383,21 +404,21 @@ export class AdvancedTree implements OnInit, AfterContentInit, OnDestroy, Advanc
 
     @Input() droppableNodes: boolean;
 
-    @Input() metaKeySelection: boolean = true;
+    @Input() metaKeySelection = true;
 
     // @Input() propagateSelectionUp: boolean = false;
 
-    @Input() propagateSelectionDown: boolean = false;
+    @Input() propagateSelectionDown = false;
 
-    @Input() propagateCheckedUp: boolean = false;
+    @Input() propagateCheckedUp= false;
 
-    @Input() propagateCheckedDown: boolean = false;
+    @Input() propagateCheckedDown = false;
 
     @Input() loading: boolean;
 
-    @Input() loadingIcon: string = 'fa-circle-o-notch';
+    @Input() loadingIcon = 'fa-circle-o-notch';
 
-    @Input() emptyMessage: string = 'No records found';
+    @Input() emptyMessage = 'No records found';
 
     @ContentChildren(PrimeAdvancedTemplate) templates: QueryList<any>;
 
@@ -421,7 +442,7 @@ export class AdvancedTree implements OnInit, AfterContentInit, OnDestroy, Advanc
 
     public dragStopSubscription: Subscription;
 
-    private clicks: number = 0;
+    private clicks = 0;
 
     constructor(public el: ElementRef, @Optional() public dragDropService: AdvancedTreeDragDropService) {}
 
@@ -481,7 +502,8 @@ export class AdvancedTree implements OnInit, AfterContentInit, OnDestroy, Advanc
 
     onNodeSingleClick(event: MouseEvent, node: AdvancedTreeNode) {
         let eventTarget = (<Element> event.target);
-
+        let addedNodes: AdvancedTreeNode[] = [];
+        let removedNodes: AdvancedTreeNode[] = [];
 
         if (eventTarget.className && eventTarget.className.indexOf('ui-tree-toggler') === 0) {
             return;
@@ -541,19 +563,21 @@ export class AdvancedTree implements OnInit, AfterContentInit, OnDestroy, Advanc
                 // node already selected
                 if ( this.isSingleSelectionMode() ) {
                     // single selection, just clear selection
-                    this.selection = [];
-                    this.selectionChange.emit(this.selection);
+                    removedNodes.push(this.selection);
+                    this.selection = null;
+                    this.selectionChange.emit({selectionList: this.selection, addedList: addedNodes, removedList: removedNodes});
                     this.onNodeUnselect.emit({originalEvent: event, node: node});
                 }
                 else {
                     if ( metaSelection ) {
                         if ( metaKey ) {
                             // metakey multiselection, remove node from selection
+                            removedNodes.push(node);
                             this.selection = this.selection.filter((val, i) => i !== index);
                             if ( this.propagateSelectionDown ) {
-                                this.propagateDown(node, false);
+                                this.propagateDown(node, addedNodes, removedNodes, false); //
                             }
-                            this.selectionChange.emit(this.selection);
+                            this.selectionChange.emit({selectionList: this.selection, addedList: addedNodes, removedList: removedNodes});
                             this.onNodeUnselect.emit({originalEvent: event, node: node});
                         }
                         else {
@@ -569,65 +593,71 @@ export class AdvancedTree implements OnInit, AfterContentInit, OnDestroy, Advanc
                             // ++++ explorer like behaviour end ++++
 
                             // ++++ novo like behaviour ++++
+                            removedNodes.push(node);
                             this.selection = this.selection.filter((val, i) => i !== index);
                             if ( this.propagateSelectionDown ) {
-                                this.propagateDown(node, false);
+                                this.propagateDown(node, addedNodes, removedNodes, false);
                             }
-                            this.selectionChange.emit(this.selection);
+                            this.selectionChange.emit({selectionList: this.selection, addedList: addedNodes, removedList: removedNodes});
                             this.onNodeUnselect.emit({originalEvent: event, node: node});
                             // ++++ novo like behaviour end ++++
                         }
                     }
                     else {
                         // multiselection, remove node from selection
+                        removedNodes.push(node);
                         this.selection = this.selection.filter((val, i) => i !== index);
                         if ( this.propagateSelectionDown ) {
-                            this.propagateDown(node, false);
+                            this.propagateDown(node, addedNodes, removedNodes, false);
                         }
-                        this.selectionChange.emit(this.selection);
+                        this.selectionChange.emit({selectionList: this.selection, addedList: addedNodes, removedList: removedNodes});
                         this.onNodeUnselect.emit({originalEvent: event, node: node});
                     }
                 }
             }
             else {
+                // necessary for all conditions within
+                addedNodes.push(node);
                 // node not selected
                 if ( this.isSingleSelectionMode() ) {
                     // single selection, just set node as selection
+                    if (!this.selection) {
+                        removedNodes.push(this.selection);
+                    }
                     this.selection = node;
-                    this.selectionChange.emit(this.selection);
+                    this.selectionChange.emit({selectionList: this.selection, addedList: addedNodes, removedList: removedNodes});
                     this.onNodeSelect.emit({originalEvent: event, node: node});
                 }
                 else {
                     if ( metaSelection ) {
                         if ( metaKey ) {
                             // metakey multiselection, add node to selection
-                            this.selection = this.selection || [];
-                            this.selection = [...this.selection, node];
+                            this.selection = [...this.selection || [], node];
                             if ( this.propagateSelectionDown ) {
-                                this.propagateDown(node, true);
+                                this.propagateDown(node, addedNodes, removedNodes, true);
                             }
-                            this.selectionChange.emit(this.selection);
+                            this.selectionChange.emit({selectionList: this.selection, addedList: addedNodes, removedList: removedNodes});
                             this.onNodeSelect.emit({originalEvent: event, node: node});
                         }
                         else {
                             // metakey multiselection, just set node as selected
+                            removedNodes = this.selection;
                             this.selection = [];
                             this.selection = [...this.selection, node];
                             if ( this.propagateSelectionDown ) {
-                                this.propagateDown(node, true);
+                                this.propagateDown(node, addedNodes, removedNodes, true);
                             }
-                            this.selectionChange.emit(this.selection);
+                            this.selectionChange.emit({selectionList: this.selection, addedList: addedNodes, removedList: removedNodes});
                             this.onNodeSelect.emit({originalEvent: event, node: node});
                         }
                     }
                     else {
                         // multiselection, just add node to selection
-                        this.selection = this.selection || [];
-                        this.selection = [...this.selection, node];
+                        this.selection = [...this.selection || [], node];
                         if ( this.propagateSelectionDown ) {
-                            this.propagateDown(node, true);
+                            this.propagateDown(node, addedNodes, removedNodes, true);
                         }
-                        this.selectionChange.emit(this.selection);
+                        this.selectionChange.emit({selectionList: this.selection, addedList: addedNodes, removedList: removedNodes});
                         this.onNodeSelect.emit({originalEvent: event, node: node});
                     }
                 }
@@ -739,8 +769,8 @@ export class AdvancedTree implements OnInit, AfterContentInit, OnDestroy, Advanc
 
     propagateUp(node: AdvancedTreeNode, select: boolean) {
         if (node.children && node.children.length) {
-            let selectedCount: number = 0;
-            let childPartialSelected: boolean = false;
+            let selectedCount = 0;
+            let childPartialSelected = false;
             for (let child of node.children) {
                 if (this.isSelected(child)) {
                     selectedCount++;
@@ -777,27 +807,33 @@ export class AdvancedTree implements OnInit, AfterContentInit, OnDestroy, Advanc
         }
     }
 
-    propagateDown(node: AdvancedTreeNode, select: boolean) {
+    propagateDown(node: AdvancedTreeNode, addedNodes: AdvancedTreeNode[], removedNodes: AdvancedTreeNode[], select: boolean) {
         let index = this.findIndexInSelection(node);
 
         if (select && index === -1) {
+            if (addedNodes.indexOf(node) === -1) {
+                addedNodes.push(node);
+            }
             this.selection = [...this.selection || [], node];
         }
         else if (!select && index > -1) {
+            if (removedNodes.indexOf(node) === -1) {
+                removedNodes.push(node);
+            }
             this.selection = this.selection.filter((val, i) => i !== index);
         }
 
         if (node.children && node.children.length) {
             for (let child of node.children) {
-                this.propagateDown(child, select);
+                this.propagateDown(child, addedNodes, removedNodes, select);
             }
         }
     }
 
     propagateChkUp(node: AdvancedTreeNode, check: boolean) {
         if (node.children && node.children.length) {
-            let checkedCount: number = 0;
-            let childPartialChecked: boolean = false;
+            let checkedCount = 0;
+            let childPartialChecked = false;
             for (let child of node.children) {
                 if (this.isChecked(child)) {
                     checkedCount++;
@@ -879,7 +915,7 @@ export class AdvancedTree implements OnInit, AfterContentInit, OnDestroy, Advanc
 
     isPartialChecked(node: AdvancedTreeNode) {
         return this.findIndexInPartialChecked(node) !== -1;
-    }    
+    }
 
     isSingleSelectionMode() {
         return this.selectionMode && this.selectionMode === 'single';
@@ -947,7 +983,7 @@ export class AdvancedTree implements OnInit, AfterContentInit, OnDestroy, Advanc
             return false;
         }
         else if (this.isValidDragScope(dragNodeScope)) {
-            let allow: boolean = true;
+            let allow = true;
             if (dropNode) {
                 if (dragNode === dropNode) {
                     allow = false;

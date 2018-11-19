@@ -10,6 +10,7 @@ import {AdvancedTreeDragDropService} from '../../modules/common/api';
     templateUrl: './advancedtreedemo.component.html',
     providers: [AdvancedTreeDragDropService]
 })
+// tslint:disable-next-line:component-class-suffix
 export class AdvancedTreeDemo implements OnInit {
 
     msgs: Message[];
@@ -59,6 +60,9 @@ export class AdvancedTreeDemo implements OnInit {
     checkedFiles23: AdvancedTreeNode[];
     checkedFiles24: AdvancedTreeNode[];
     checkedFiles25: AdvancedTreeNode[];
+
+    addedfiles: AdvancedTreeNode[] = [];
+    removedfiles: AdvancedTreeNode[] = [];
 
     partialCheckedNodes: AdvancedTreeNode[] = [];
 
@@ -121,6 +125,11 @@ export class AdvancedTreeDemo implements OnInit {
             {label: 'View', icon: 'fa-search', command: (event) => this.viewFile(this.selectedFile2)},
             {label: 'Unselect', icon: 'fa-close', command: (event) => this.unselectFile()}
         ];
+    }
+
+    selectionChanged(event) {
+        this.addedfiles = event.addedList;
+        this.removedfiles = event.removedList;
     }
 
     nodeSelect(event) {
