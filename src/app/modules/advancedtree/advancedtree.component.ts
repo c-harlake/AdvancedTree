@@ -577,9 +577,9 @@ export class AdvancedTree implements OnInit, AfterContentInit, OnDestroy, Advanc
                     // single selection, just clear selection
                     removedNodes.push(this.selection);
                     this.selection = [];
-                    this.selectionChange.emit(this.selection);
-                    this.removedNodesChange.emit(removedNodes);
-                    this.onNodeUnselect.emit({originalEvent: event, node: node});
+                    // this.selectionChange.emit(this.selection);
+                    // this.removedNodesChange.emit(removedNodes);
+                    // this.onNodeUnselect.emit({originalEvent: event, node: node});
                 }
                 else {
                     if ( metaSelection ) {
@@ -590,9 +590,9 @@ export class AdvancedTree implements OnInit, AfterContentInit, OnDestroy, Advanc
                             if ( this.propagateSelectionDown ) {
                                 this.propagateDown(node, addedNodes, removedNodes, false); //
                             }
-                            this.selectionChange.emit(this.selection);
-                            this.removedNodesChange.emit(removedNodes);
-                            this.onNodeUnselect.emit({originalEvent: event, node: node});
+                            // this.selectionChange.emit(this.selection);
+                            // this.removedNodesChange.emit(removedNodes);
+                            // this.onNodeUnselect.emit({originalEvent: event, node: node});
                         }
                         else {
                             // multiselection, just keep this node selected
@@ -612,9 +612,9 @@ export class AdvancedTree implements OnInit, AfterContentInit, OnDestroy, Advanc
                             if ( this.propagateSelectionDown ) {
                                 this.propagateDown(node, addedNodes, removedNodes, false);
                             }
-                            this.selectionChange.emit(this.selection);
-                            this.removedNodesChange.emit(removedNodes);
-                            this.onNodeUnselect.emit({originalEvent: event, node: node});
+                            // this.selectionChange.emit(this.selection);
+                            // this.removedNodesChange.emit(removedNodes);
+                            // this.onNodeUnselect.emit({originalEvent: event, node: node});
                             // ++++ novo like behaviour end ++++
                         }
                     }
@@ -625,11 +625,12 @@ export class AdvancedTree implements OnInit, AfterContentInit, OnDestroy, Advanc
                         if ( this.propagateSelectionDown ) {
                             this.propagateDown(node, addedNodes, removedNodes, false);
                         }
-                        this.selectionChange.emit(this.selection);
-                        this.removedNodesChange.emit(removedNodes);
-                        this.onNodeUnselect.emit({originalEvent: event, node: node});
+                        // this.selectionChange.emit(this.selection);
+                        // this.removedNodesChange.emit(removedNodes);
+                        // this.onNodeUnselect.emit({originalEvent: event, node: node});
                     }
                 }
+                this.onNodeUnselect.emit({originalEvent: event, node: node});
             }
             else {
                 // necessary for all conditions within
@@ -641,8 +642,8 @@ export class AdvancedTree implements OnInit, AfterContentInit, OnDestroy, Advanc
                         removedNodes.push(this.selection);
                     }
                     this.selection = node;
-                    this.selectionChange.emit(this.selection);
-                    this.onNodeSelect.emit({originalEvent: event, node: node});
+                    // this.selectionChange.emit(this.selection);
+                    // this.onNodeSelect.emit({originalEvent: event, node: node});
                 }
                 else {
                     if ( metaSelection ) {
@@ -652,9 +653,9 @@ export class AdvancedTree implements OnInit, AfterContentInit, OnDestroy, Advanc
                             if ( this.propagateSelectionDown ) {
                                 this.propagateDown(node, addedNodes, removedNodes, true);
                             }
-                            this.selectionChange.emit(this.selection);
-                            this.addedNodesChange.emit(addedNodes);
-                            this.onNodeSelect.emit({originalEvent: event, node: node});
+                            // this.selectionChange.emit(this.selection);
+                            // this.addedNodesChange.emit(addedNodes);
+                            // this.onNodeSelect.emit({originalEvent: event, node: node});
                         }
                         else {
                             // metakey multiselection, just set node as selected
@@ -664,9 +665,9 @@ export class AdvancedTree implements OnInit, AfterContentInit, OnDestroy, Advanc
                             if ( this.propagateSelectionDown ) {
                                 this.propagateDown(node, addedNodes, removedNodes, true);
                             }
-                            this.selectionChange.emit(this.selection);
-                            this.removedNodesChange.emit(removedNodes);
-                            this.onNodeSelect.emit({originalEvent: event, node: node});
+                            // this.selectionChange.emit(this.selection);
+                            // this.removedNodesChange.emit(removedNodes);
+                            // this.onNodeSelect.emit({originalEvent: event, node: node});
                         }
                     }
                     else {
@@ -675,14 +676,17 @@ export class AdvancedTree implements OnInit, AfterContentInit, OnDestroy, Advanc
                         if ( this.propagateSelectionDown ) {
                             this.propagateDown(node, addedNodes, removedNodes, true);
                         }
-                        this.selectionChange.emit(this.selection);
-                        this.addedNodesChange.emit(addedNodes);
-                        this.onNodeSelect.emit({originalEvent: event, node: node});
+                        // this.selectionChange.emit(this.selection);
+                        // this.addedNodesChange.emit(addedNodes);
+                        // this.onNodeSelect.emit({originalEvent: event, node: node});
                     }
                 }
+                this.onNodeSelect.emit({originalEvent: event, node: node});
             }
+            this.selectionChange.emit(this.selection);
+            this.addedNodesChange.emit(addedNodes);
+            this.removedNodesChange.emit(removedNodes);
         }
-
         this.nodeTouched = false;
     }
 
