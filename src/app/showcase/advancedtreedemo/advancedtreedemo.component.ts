@@ -128,8 +128,16 @@ export class AdvancedTreeDemo implements OnInit {
     }
 
     selectionChanged(event) {
-        this.addedfiles = event.addedList;
-        this.removedfiles = event.removedList;
+        // this.addedfiles = event.data;
+        // this.removedfiles = event.data;
+    }
+
+    addedChanged(event) {
+        this.addedfiles = event;
+    }
+
+    removedChanged(event) {
+        this.removedfiles = event;
     }
 
     nodeSelect(event) {

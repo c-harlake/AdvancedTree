@@ -368,6 +368,10 @@ export class AdvancedTree implements OnInit, AfterContentInit, OnDestroy, Advanc
 
     @Output() selectionChange: EventEmitter<any> = new EventEmitter();
 
+    @Output() addedNodesChange: EventEmitter<any> = new EventEmitter();
+
+    @Output() removedNodesChange: EventEmitter<any> = new EventEmitter();
+
     @Output() checkedChange: EventEmitter<any> = new EventEmitter();
 
     @Output() onNodeDblClick: EventEmitter<any> = new EventEmitter();
@@ -484,6 +488,14 @@ export class AdvancedTree implements OnInit, AfterContentInit, OnDestroy, Advanc
     }
 
     onNodeClick(event: MouseEvent, node: AdvancedTreeNode) {
+        if ( this.selection === null) {
+            if ( this.isSingleSelectionMode() ) {
+                this.selection = null;
+            }
+            else {
+                this.selection = [];
+            }
+        }
         this.clicks++;
         if ( this.clicks === 1 ) {
             setTimeout( () => {
@@ -564,8 +576,9 @@ export class AdvancedTree implements OnInit, AfterContentInit, OnDestroy, Advanc
                 if ( this.isSingleSelectionMode() ) {
                     // single selection, just clear selection
                     removedNodes.push(this.selection);
-                    this.selection = null;
-                    this.selectionChange.emit({selectionList: this.selection, addedList: addedNodes, removedList: removedNodes});
+                    this.selection = [];
+                    this.selectionChange.emit(this.selection);
+                    this.removedNodesChange.emit(removedNodes);
                     this.onNodeUnselect.emit({originalEvent: event, node: node});
                 }
                 else {
@@ -577,7 +590,8 @@ export class AdvancedTree implements OnInit, AfterContentInit, OnDestroy, Advanc
                             if ( this.propagateSelectionDown ) {
                                 this.propagateDown(node, addedNodes, removedNodes, false); //
                             }
-                            this.selectionChange.emit({selectionList: this.selection, addedList: addedNodes, removedList: removedNodes});
+                            this.selectionChange.emit(this.selection);
+                            this.removedNodesChange.emit(removedNodes);
                             this.onNodeUnselect.emit({originalEvent: event, node: node});
                         }
                         else {
@@ -598,7 +612,8 @@ export class AdvancedTree implements OnInit, AfterContentInit, OnDestroy, Advanc
                             if ( this.propagateSelectionDown ) {
                                 this.propagateDown(node, addedNodes, removedNodes, false);
                             }
-                            this.selectionChange.emit({selectionList: this.selection, addedList: addedNodes, removedList: removedNodes});
+                            this.selectionChange.emit(this.selection);
+                            this.removedNodesChange.emit(removedNodes);
                             this.onNodeUnselect.emit({originalEvent: event, node: node});
                             // ++++ novo like behaviour end ++++
                         }
@@ -610,7 +625,8 @@ export class AdvancedTree implements OnInit, AfterContentInit, OnDestroy, Advanc
                         if ( this.propagateSelectionDown ) {
                             this.propagateDown(node, addedNodes, removedNodes, false);
                         }
-                        this.selectionChange.emit({selectionList: this.selection, addedList: addedNodes, removedList: removedNodes});
+                        this.selectionChange.emit(this.selection);
+                        this.removedNodesChange.emit(removedNodes);
                         this.onNodeUnselect.emit({originalEvent: event, node: node});
                     }
                 }
@@ -621,11 +637,11 @@ export class AdvancedTree implements OnInit, AfterContentInit, OnDestroy, Advanc
                 // node not selected
                 if ( this.isSingleSelectionMode() ) {
                     // single selection, just set node as selection
-                    if (!this.selection) {
+                    if (this.selection) {
                         removedNodes.push(this.selection);
                     }
                     this.selection = node;
-                    this.selectionChange.emit({selectionList: this.selection, addedList: addedNodes, removedList: removedNodes});
+                    this.selectionChange.emit(this.selection);
                     this.onNodeSelect.emit({originalEvent: event, node: node});
                 }
                 else {
@@ -636,7 +652,8 @@ export class AdvancedTree implements OnInit, AfterContentInit, OnDestroy, Advanc
                             if ( this.propagateSelectionDown ) {
                                 this.propagateDown(node, addedNodes, removedNodes, true);
                             }
-                            this.selectionChange.emit({selectionList: this.selection, addedList: addedNodes, removedList: removedNodes});
+                            this.selectionChange.emit(this.selection);
+                            this.addedNodesChange.emit(addedNodes);
                             this.onNodeSelect.emit({originalEvent: event, node: node});
                         }
                         else {
@@ -647,7 +664,8 @@ export class AdvancedTree implements OnInit, AfterContentInit, OnDestroy, Advanc
                             if ( this.propagateSelectionDown ) {
                                 this.propagateDown(node, addedNodes, removedNodes, true);
                             }
-                            this.selectionChange.emit({selectionList: this.selection, addedList: addedNodes, removedList: removedNodes});
+                            this.selectionChange.emit(this.selection);
+                            this.removedNodesChange.emit(removedNodes);
                             this.onNodeSelect.emit({originalEvent: event, node: node});
                         }
                     }
@@ -657,7 +675,8 @@ export class AdvancedTree implements OnInit, AfterContentInit, OnDestroy, Advanc
                         if ( this.propagateSelectionDown ) {
                             this.propagateDown(node, addedNodes, removedNodes, true);
                         }
-                        this.selectionChange.emit({selectionList: this.selection, addedList: addedNodes, removedList: removedNodes});
+                        this.selectionChange.emit(this.selection);
+                        this.addedNodesChange.emit(addedNodes);
                         this.onNodeSelect.emit({originalEvent: event, node: node});
                     }
                 }
@@ -672,6 +691,8 @@ export class AdvancedTree implements OnInit, AfterContentInit, OnDestroy, Advanc
     }
 
     onNodeRightClick(event: MouseEvent, node: AdvancedTreeNode) {
+        let addedNodes: AdvancedTreeNode[] = [];
+        let removedNodes: AdvancedTreeNode[] = [];
         if (this.contextMenu) {
             let eventTarget = (<Element> event.target);
 
@@ -699,10 +720,10 @@ export class AdvancedTree implements OnInit, AfterContentInit, OnDestroy, Advanc
 
                 if (!selected) {
                     if (this.isSingleSelectionMode()) {
-                        this.selectionChange.emit(node);
+                        this.selectionChange.emit({selectionList: this.selection, addedList: addedNodes, removedList: removedNodes});
                     }
                     else {
-                        this.selectionChange.emit([node]);
+                        this.selectionChange.emit({selectionList: this.selection, addedList: addedNodes, removedList: removedNodes});
                     }
                 }
 
