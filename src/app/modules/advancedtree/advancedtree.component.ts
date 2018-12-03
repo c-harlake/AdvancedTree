@@ -659,7 +659,9 @@ export class AdvancedTree implements OnInit, AfterContentInit, OnDestroy, Advanc
                         }
                         else {
                             // metakey multiselection, just set node as selected
-                            removedNodes = this.selection;
+                            if ( this.selection) {
+                                removedNodes = this.selection;
+                            }
                             this.selection = [];
                             this.selection = [...this.selection, node];
                             if ( this.propagateSelectionDown ) {
