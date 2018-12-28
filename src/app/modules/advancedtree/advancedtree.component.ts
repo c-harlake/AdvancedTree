@@ -586,6 +586,7 @@ export class AdvancedTree implements OnInit, AfterContentInit, OnDestroy, Advanc
 
                             // ++++ novo like behaviour ++++
                             this.selection = this.selection.filter((val, i) => i !== index);
+                            console.log(this.selection);
                             if ( this.propagateSelectionDown ) {
                                 this.propagateDown(node, false);
                             }
