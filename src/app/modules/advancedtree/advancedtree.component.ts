@@ -12,90 +12,8 @@ import {Subscription} from 'rxjs/Subscription';
 @Component({
     // tslint:disable-next-line:component-selector
     selector: 'p-atreeNode',
-    template: `
-        <ng-template [ngIf]="node">
-            <li *ngIf="tree.droppableNodes" class="ui-treenode-droppoint"
-             [ngClass]="{'ui-treenode-droppoint-active ui-state-highlight':draghoverPrev}"
-            (drop)="onDropPoint($event,-1)" (dragover)="onDropPointDragOver($event)" (dragenter)="onDropPointDragEnter($event,-1)"
-             (dragleave)="onDropPointDragLeave($event)"></li>
-            <li *ngIf="!tree.horizontal" [ngClass]="['ui-treenode',node.styleClass||'', isLeaf() ? 'ui-treenode-leaf': '']">
-                <div class="ui-treenode-content" (click)="onNodeClick($event)" (contextmenu)="onNodeRightClick($event)"
-                 (touchend)="onNodeTouchEnd()" (drop)="onDropNode($event)" (dragover)="onDropNodeDragOver($event)"
-                  (dragenter)="onDropNodeDragEnter($event)" (dragleave)="onDropNodeDragLeave($event)"
-                    [ngClass]="{'ui-treenode-selectable':tree.selectionMode && node.selectable !== false,
-                    'ui-treenode-dragover':draghoverNode, 'ui-treenode-content-selected':isSelected()}" [draggable]="tree.draggableNodes"
-                     (dragstart)="onDragStart($event)" (dragend)="onDragStop($event)">
-                    <span class="ui-tree-toggler  fa fa-fw" [ngClass]="{'fa-caret-right':!node.expanded,'fa-caret-down':node.expanded}"
-                            (click)="toggle($event)"></span
-                    ><div class="ui-chkbox" *ngIf="tree.checkbox"><div class="ui-chkbox-box ui-widget ui-corner-all ui-state-default">
-                        <span class="ui-chkbox-icon ui-clickable fa"
-                         [ngClass]="{'fa-check':isChecked(),'fa-minus':isPartialChecked()}"></span></div></div
-                    ><span [class]="getIcon()" *ngIf="node.icon||node.expandedIcon||node.collapsedIcon"></span
-                    ><span class="ui-treenode-label ui-corner-all"
-                         [ngClass]="{'ui-state-highlight':isSelected()}">
-                            <span *ngIf="!tree.getTemplateForNode(node)" id="{{node.id}}">{{node.label}}</span>
-                            <span *ngIf="tree.getTemplateForNode(node)">
-                                <ng-container *ngTemplateOutlet="tree.getTemplateForNode(node); context: {$implicit: node}"></ng-container>
-                            </span>
-                    </span>
-                </div>
-                <ul class="ui-treenode-children" style="display: none;" *ngIf="node.children && node.expanded"
-                 [style.display]="node.expanded ? 'block' : 'none'">
-                    <p-atreeNode *ngFor="let childNode of node.children;let firstChild=first;let lastChild=last;
-                     let index=index" [node]="childNode" [parentNode]="node"
-                      [firstChild]="firstChild" [lastChild]="lastChild" [index]="index"></p-atreeNode>
-                </ul>
-            </li>
-            <li *ngIf="tree.droppableNodes&&lastChild" class="ui-treenode-droppoint"
-             [ngClass]="{'ui-treenode-droppoint-active ui-state-highlight':draghoverNext}"
-            (drop)="onDropPoint($event,1)" (dragover)="onDropPointDragOver($event)" (dragenter)="onDropPointDragEnter($event,1)"
-             (dragleave)="onDropPointDragLeave($event)"></li>
-            <table *ngIf="tree.horizontal" [class]="node.styleClass">
-                <tbody>
-                    <tr>
-                        <td class="ui-treenode-connector" *ngIf="!root">
-                            <table class="ui-treenode-connector-table">
-                                <tbody>
-                                    <tr>
-                                        <td [ngClass]="{'ui-treenode-connector-line':!firstChild}"></td>
-                                    </tr>
-                                    <tr>
-                                        <td [ngClass]="{'ui-treenode-connector-line':!lastChild}"></td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </td>
-                        <td class="ui-treenode" [ngClass]="{'ui-treenode-collapsed':!node.expanded}">
-                            <div class="ui-treenode-content ui-state-default ui-corner-all"
-                             [ngClass]="{'ui-treenode-selectable':tree.selectionMode,'ui-state-highlight':isSelected()}"
-                                 (click)="onNodeClick($event)" (contextmenu)="onNodeRightClick($event)"
-                                (touchend)="onNodeTouchEnd()">
-                                <span class="ui-tree-toggler fa fa-fw" [ngClass]="{'fa-plus':!node.expanded,'fa-minus':node.expanded}"
-                                 *ngIf="!isLeaf()"
-                                        (click)="toggle($event)"></span
-                                ><span [class]="getIcon()" *ngIf="node.icon||node.expandedIcon||node.collapsedIcon"></span
-                                ><span class="ui-treenode-label ui-corner-all">
-                                        <span *ngIf="!tree.getTemplateForNode(node)" id="{{node.id}}">{{node.label}}</span>
-                                        <span *ngIf="tree.getTemplateForNode(node)">
-                                        <ng-container *ngTemplateOutlet="tree.getTemplateForNode(node);
-                                         context: {$implicit: node}"></ng-container>
-                                        </span>
-                                </span>
-                            </div>
-                        </td>
-                        <td class="ui-treenode-children-container" *ngIf="node.children && node.expanded"
-                         [style.display]="node.expanded ? 'table-cell' : 'none'">
-                            <div class="ui-treenode-children">
-                                <p-atreeNode *ngFor="let childNode of node.children;let firstChild=first;
-                                let lastChild=last;" [node]="childNode"
-                                         [firstChild]="firstChild" [lastChild]="lastChild"></p-atreeNode>
-                            </div>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </ng-template>
-    `
+    templateUrl: 'advancedtree.component.html',
+    styles: ['editableInput { box-sizing: border-box; border-radius: 0.2em; border: 1px solid silver;}']
 })
 // tslint:disable-next-line:component-class-suffix
 export class UIAdvancedTreeNode implements OnInit {
@@ -120,10 +38,48 @@ export class UIAdvancedTreeNode implements OnInit {
 
     draghoverNode: boolean;
 
+    isEditing = false; // for checking node is in editing mode or not
+
+    editableNodeText = ''; // for appending text and assigning after focusout of currently editing node
+
+    lastEditingNode: AdvancedTreeNode; // last node in edit mode
+
     constructor(@Inject(forwardRef(() => AdvancedTree)) public tree: AdvancedTree) {}
 
     ngOnInit() {
         this.node.parent = this.parentNode;
+    }
+
+    makeEditable = (node: AdvancedTreeNode) => {
+        node.editable = true;
+        // if (this.lastEditingNode) {
+        //     this.lastEditingNode.editable = false;
+        // }
+        // this.lastEditingNode = node;
+    }
+
+    private makeReadable = (node: AdvancedTreeNode) => {
+        node.editable = false;
+    }
+
+    changeNodeLabel = (node: AdvancedTreeNode) => {
+        node.label = this.editableNodeText.length > 0 ? this.editableNodeText : node.label;
+        this.makeReadable(node);
+        this.editableNodeText = '';
+    }
+
+    inputChangeHandler = (event: any) => {
+        this.editableNodeText = event.target.value;
+    }
+
+    eventHandler = (event, node: AdvancedTreeNode) => {
+        if (event.keyCode === 13) {
+            this.changeNodeLabel(node);
+            this.makeReadable(node);
+        }
+        if (event.keyCode === 27) {
+            this.makeReadable(node);
+        }
     }
 
     getIcon() {

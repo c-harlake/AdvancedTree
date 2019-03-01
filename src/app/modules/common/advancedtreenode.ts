@@ -8,6 +8,7 @@ export interface AdvancedTreeNode {
     children?: AdvancedTreeNode [];
     leaf?: boolean;
     expanded?: boolean;
+    editable?: boolean;
     type?: string;
     parent?: AdvancedTreeNode;
     partialChecked?: boolean;
