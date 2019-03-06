@@ -1,5 +1,5 @@
-import {NgModule, Component, Input, AfterContentInit, OnDestroy, Output, EventEmitter, OnInit, EmbeddedViewRef, ViewContainerRef,
-    ContentChildren, QueryList, TemplateRef, Inject, ElementRef, forwardRef, Host} from '@angular/core';
+import {NgModule, Component, Input, AfterContentInit, OnDestroy, Output, EventEmitter, OnInit,
+    ContentChildren, QueryList, TemplateRef, Inject, ElementRef, forwardRef} from '@angular/core';
 import {Optional} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {AdvancedTreeNode} from '../common/advancedtreenode';
@@ -8,12 +8,13 @@ import {PrimeAdvancedTemplate} from '../common/advancedshared';
 import {AdvancedBlockableUI} from '../common/advancedblockableui';
 import {AdvancedTreeDragDropService} from '../common/advancedtreedragdropservice';
 import {Subscription} from 'rxjs/Subscription';
+import { NodeService } from 'app/showcase/service/node.service';
 
 @Component({
     // tslint:disable-next-line:component-selector
     selector: 'p-atreeNode',
     templateUrl: 'advancedtree.component.html',
-    styles: ['editableInput { box-sizing: border-box; border-radius: 0.2em; border: 1px solid silver;}']
+    styles: ['.editableInput { box-sizing: border-box; border-radius: 0.2em; border: 1px solid silver; height: 19px;}']
 })
 // tslint:disable-next-line:component-class-suffix
 export class UIAdvancedTreeNode implements OnInit {
@@ -42,24 +43,32 @@ export class UIAdvancedTreeNode implements OnInit {
 
     editableNodeText = ''; // for appending text and assigning after focusout of currently editing node
 
-    lastEditingNode: AdvancedTreeNode; // last node in edit mode
-
-    constructor(@Inject(forwardRef(() => AdvancedTree)) public tree: AdvancedTree) {}
+    constructor(@Inject(forwardRef(() => AdvancedTree)) public tree: AdvancedTree, public nodeService: NodeService) {}
 
     ngOnInit() {
         this.node.parent = this.parentNode;
     }
 
     makeEditable = (node: AdvancedTreeNode) => {
+        let nodeId = node.id ? node.id.toString() : '';
         node.editable = true;
-        // if (this.lastEditingNode) {
-        //     this.lastEditingNode.editable = false;
-        // }
-        // this.lastEditingNode = node;
+        if (this.nodeService.lastNodeInEditingMode.length > 0) {
+            this.nodeService.lastNodeInEditingMode[0].editable = false;
+            this.nodeService.lastNodeInEditingMode = [];
+        }
+        this.nodeService.lastNodeInEditingMode.push(node);
+        setTimeout(() => {
+            nodeId = nodeId.length > 0 ? nodeId : '0';
+            (<any>document.getElementById('editableInput_' + nodeId + '')).focus();
+        }, 0);
     }
 
     private makeReadable = (node: AdvancedTreeNode) => {
         node.editable = false;
+        if (this.nodeService.lastNodeInEditingMode.length > 0) {
+            this.nodeService.lastNodeInEditingMode[0].editable = false;
+            this.nodeService.lastNodeInEditingMode = [];
+        }
     }
 
     changeNodeLabel = (node: AdvancedTreeNode) => {
@@ -444,6 +453,9 @@ export class AdvancedTree implements OnInit, AfterContentInit, OnDestroy, Advanc
     }
 
     onNodeClick(event: MouseEvent, node: AdvancedTreeNode) {
+        if (node.editable) {
+            return false;
+        }
         if ( this.selection === null) {
             if ( this.isSingleSelectionMode() ) {
                 this.selection = null;

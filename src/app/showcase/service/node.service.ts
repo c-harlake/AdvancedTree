@@ -8,6 +8,8 @@ import { AdvancedTreeNode } from '../../modules/common/api';
 @Injectable()
 export class NodeService {
 
+    lastNodeInEditingMode = [];
+
     constructor(private http: HttpClient) { }
 
     getFiles() {
