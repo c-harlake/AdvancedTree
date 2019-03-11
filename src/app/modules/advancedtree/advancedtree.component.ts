@@ -8,6 +8,7 @@ import {PrimeAdvancedTemplate} from '../common/advancedshared';
 import {AdvancedBlockableUI} from '../common/advancedblockableui';
 import {AdvancedTreeDragDropService} from '../common/advancedtreedragdropservice';
 import {Subscription} from 'rxjs/Subscription';
+import { Tree } from 'primeng/primeng';
 
 @Component({
     // tslint:disable-next-line:component-selector
@@ -127,19 +128,24 @@ export class UIAdvancedTreeNode implements OnInit {
     }
 
     onNodeClick(event: MouseEvent) {
-        let d = new Date();
-        let currentDate = d.getTime()
-        if ( this.node !== null && this.lastclickedNode === this.node && this.isSelected() === true &&
-            ( currentDate - this.lastclickedDate ) > 250 && ( currentDate - this.lastclickedDate ) < 1000 ) {
-            console.log('slow DblClick');
-            this.makeEditable(this.node);
-            this.lastclickedDate = 0;
-            this.lastclickedNode = null;
-            return;
+        if ( this.tree.inlineEdit === true ) {
+            let d = new Date();
+            let currentDate = d.getTime()
+            if ( this.node !== null && this.lastclickedNode === this.node && this.isSelected() === true &&
+                ( currentDate - this.lastclickedDate ) > 250 && ( currentDate - this.lastclickedDate ) < 1000 ) {
+                console.log('slow DblClick');
+                this.makeEditable(this.node);
+                this.lastclickedDate = 0;
+                this.lastclickedNode = null;
+                return;
+            }
+            else {
+                this.lastclickedDate = currentDate;
+                this.lastclickedNode = this.node;
+                this.tree.onNodeClick(event, this.node);
+            }
         }
         else {
-            this.lastclickedDate = currentDate;
-            this.lastclickedNode = this.node;
             this.tree.onNodeClick(event, this.node);
         }
     }
