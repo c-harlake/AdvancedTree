@@ -14,7 +14,7 @@
           <div class="ui-chkbox-box ui-widget ui-corner-all ui-state-default">
             <span class="ui-chkbox-icon ui-clickable fa" [ngClass]="{'fa-check':isChecked(),'fa-minus':isPartialChecked()}"></span></div>
         </div><span [class]="getIcon()" *ngIf="node.icon||node.expandedIcon||node.collapsedIcon"></span>
-        <span class="ui-treenode-label ui-corner-all" (dblclick)="makeEditable(node)"
+        <span class="ui-treenode-label ui-corner-all"
           [ngClass]="{'ui-state-highlight':isSelected() && !node.editable}">
           <input type="text" class="editableInput" value="{{node.label}}" id="editableInput_{{node.id}}" *ngIf="node.editable" (input)="inputChangeHandler($event)" (blur)="changeNodeLabel(node)" (keydown)="eventHandler($event, node)" />
           <span *ngIf="!tree.getTemplateForNode(node) && !node.editable" id="{{node.id}}">{{node.label}}</span>

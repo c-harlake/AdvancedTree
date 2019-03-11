@@ -8,7 +8,6 @@ import {PrimeAdvancedTemplate} from '../common/advancedshared';
 import {AdvancedBlockableUI} from '../common/advancedblockableui';
 import {AdvancedTreeDragDropService} from '../common/advancedtreedragdropservice';
 import {Subscription} from 'rxjs/Subscription';
-import { NodeService } from 'app/showcase/service/node.service';
 
 @Component({
     // tslint:disable-next-line:component-selector
@@ -43,20 +42,27 @@ export class UIAdvancedTreeNode implements OnInit {
 
     editableNodeText = ''; // for appending text and assigning after focusout of currently editing node
 
-    constructor(@Inject(forwardRef(() => AdvancedTree)) public tree: AdvancedTree, public nodeService: NodeService) {}
+    private lastclickedNode: AdvancedTreeNode = null;
+    private lastclickedDate = 0;
+
+    constructor(@Inject(forwardRef(() => AdvancedTree)) public tree: AdvancedTree) {}
 
     ngOnInit() {
         this.node.parent = this.parentNode;
     }
 
+    isNumeric(n: any): boolean {
+        return !isNaN(parseFloat(n)) && isFinite(n);
+    }
+
     makeEditable = (node: AdvancedTreeNode) => {
-        let nodeId = node.id ? node.id.toString() : '';
+        let nodeId = (this.isNumeric(node.id) === true) ? node.id.toString() : '';
         node.editable = true;
-        if (this.nodeService.lastNodeInEditingMode.length > 0) {
-            this.nodeService.lastNodeInEditingMode[0].editable = false;
-            this.nodeService.lastNodeInEditingMode = [];
+        if (this.tree.lastNodeInEditingMode.length > 0) {
+            this.tree.lastNodeInEditingMode[0].editable = false;
+            this.tree.lastNodeInEditingMode = [];
         }
-        this.nodeService.lastNodeInEditingMode.push(node);
+        this.tree.lastNodeInEditingMode.push(node);
         setTimeout(() => {
             nodeId = nodeId.length > 0 ? nodeId : '0';
             (<any>document.getElementById('editableInput_' + nodeId + '')).focus();
@@ -65,9 +71,12 @@ export class UIAdvancedTreeNode implements OnInit {
 
     private makeReadable = (node: AdvancedTreeNode) => {
         node.editable = false;
-        if (this.nodeService.lastNodeInEditingMode.length > 0) {
-            this.nodeService.lastNodeInEditingMode[0].editable = false;
-            this.nodeService.lastNodeInEditingMode = [];
+        if (this.tree.lastNodeInEditingMode.length > 0) {
+            this.tree.lastNodeInEditingMode[0].editable = false;
+            if ( node.label !== this.tree.lastNodeInEditingMode[0].label ) {
+                this.tree.onNodeRenamed.emit(node);
+            }
+            this.tree.lastNodeInEditingMode = [];
         }
     }
 
@@ -118,7 +127,21 @@ export class UIAdvancedTreeNode implements OnInit {
     }
 
     onNodeClick(event: MouseEvent) {
-        this.tree.onNodeClick(event, this.node);
+        let d = new Date();
+        let currentDate = d.getTime()
+        if ( this.node !== null && this.lastclickedNode === this.node && this.isSelected() === true &&
+            ( currentDate - this.lastclickedDate ) > 250 && ( currentDate - this.lastclickedDate ) < 1000 ) {
+            console.log('slow DblClick');
+            this.makeEditable(this.node);
+            this.lastclickedDate = 0;
+            this.lastclickedNode = null;
+            return;
+        }
+        else {
+            this.lastclickedDate = currentDate;
+            this.lastclickedNode = this.node;
+            this.tree.onNodeClick(event, this.node);
+        }
     }
 
     onNodeTouchEnd() {
@@ -325,6 +348,8 @@ export class AdvancedTree implements OnInit, AfterContentInit, OnDestroy, Advanc
 
     @Input() checkbox = false;
 
+    @Input() inlineEdit = false;
+
     @Input() selection: any;
 
     @Input() checked: any;
@@ -356,6 +381,8 @@ export class AdvancedTree implements OnInit, AfterContentInit, OnDestroy, Advanc
     @Output() onNodeContextMenuSelect: EventEmitter<any> = new EventEmitter();
 
     @Output() onNodeDrop: EventEmitter<any> = new EventEmitter();
+
+    @Output() onNodeRenamed: EventEmitter<AdvancedTreeNode> = new EventEmitter();
 
     @Input() style: any;
 
@@ -411,6 +438,8 @@ export class AdvancedTree implements OnInit, AfterContentInit, OnDestroy, Advanc
 
     public dragStopSubscription: Subscription;
 
+    public lastNodeInEditingMode = [];
+
     private clicks = 0;
 
     constructor(public el: ElementRef, @Optional() public dragDropService: AdvancedTreeDragDropService) {}
@@ -465,6 +494,7 @@ export class AdvancedTree implements OnInit, AfterContentInit, OnDestroy, Advanc
             }
         }
         this.clicks++;
+
         if ( this.clicks === 1 ) {
             setTimeout( () => {
                 if ( this.clicks === 1 ) {
