@@ -66,7 +66,10 @@ export class UIAdvancedTreeNode implements OnInit {
         this.tree.lastNodeInEditingMode.push(node);
         setTimeout(() => {
             nodeId = nodeId.length > 0 ? nodeId : '0';
-            (<any>document.getElementById('editableInput_' + nodeId + '')).focus();
+            let element: HTMLInputElement = <HTMLInputElement>document.getElementById('editableInput_' + nodeId + '');
+            if ( element !== null ) {
+                element.focus();
+            }
         }, 0);
     }
 
@@ -132,8 +135,8 @@ export class UIAdvancedTreeNode implements OnInit {
             let d = new Date();
             let currentDate = d.getTime()
             if ( this.node !== null && this.lastclickedNode === this.node && this.isSelected() === true &&
-                ( currentDate - this.lastclickedDate ) > 250 && ( currentDate - this.lastclickedDate ) < 1000 ) {
-                console.log('slow DblClick');
+                ( currentDate - this.lastclickedDate ) > this.tree.doubleClickTimeout &&
+                ( currentDate - this.lastclickedDate ) < this.tree.slowDoubleClickTimeout ) {
                 this.makeEditable(this.node);
                 this.lastclickedDate = 0;
                 this.lastclickedNode = null;
@@ -362,6 +365,10 @@ export class AdvancedTree implements OnInit, AfterContentInit, OnDestroy, Advanc
 
     @Input() partialchecked: any;
 
+    @Input() doubleClickTimeout: number = 250;
+
+    @Input() slowDoubleClickTimeout: number = 1000;
+
     @Output() selectionChange: EventEmitter<any> = new EventEmitter();
 
     @Output() addedNodesChange: EventEmitter<any> = new EventEmitter();
@@ -504,15 +511,13 @@ export class AdvancedTree implements OnInit, AfterContentInit, OnDestroy, Advanc
         if ( this.clicks === 1 ) {
             setTimeout( () => {
                 if ( this.clicks === 1 ) {
-                    // alert('SINGLECLICK');
                     this.onNodeSingleClick(event, node);
                 }
                 else {
-                    // alert('DOUBLECLICK');
                     this.onNodeDblClick.emit({originalEvent: event, node: node});
                 }
                 this.clicks = 0;
-            }, 250);
+            }, this.doubleClickTimeout);
         }
     }
 

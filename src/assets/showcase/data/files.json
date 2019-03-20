@@ -1,36 +1,36 @@
 {
   "data": [{
-      "id":0,
+      "id": 0,
       "label": "Documents",
       "data": "Documents Folder",
       "expandedIcon": "fa-folder-open",
       "collapsedIcon": "fa-folder",
       "children": [{
-          "id":1,
+          "id": 1,
           "label": "Work",
           "data": "Work Folder",
           "expandedIcon": "fa-folder-open",
           "collapsedIcon": "fa-folder",
           "children": [{
-            "id":2,
+            "id": 2,
             "label": "Expenses.doc",
             "icon": "fa-file-word-o",
             "data": "Expenses Document"
           }, {
-            "id":3,
+            "id": 3,
             "label": "Resume.doc",
             "icon": "fa-file-word-o",
             "data": "Resume Document"
           }]
         },
         {
-          "id":4,
+          "id": 4,
           "label": "Home",
           "data": "Home Folder",
           "expandedIcon": "fa-folder-open",
           "collapsedIcon": "fa-folder",
           "children": [{
-            "id":5,
+            "id": 5,
             "label": "Invoices.txt",
             "icon": "fa-file-word-o",
             "data": "Invoices for this month"
@@ -39,26 +39,26 @@
       ]
     },
     {
-      "id":6,
+      "id": 6,
       "label": "Pictures",
       "data": "Pictures Folder",
       "expandedIcon": "fa-folder-open",
       "collapsedIcon": "fa-folder",
       "editable": false,
       "children": [{
-          "id":7,
+          "id": 7,
           "label": "barcelona.jpg",
           "icon": "fa-file-image-o",
           "data": "Barcelona Photo"
         },
         {
-          "id":8,
+          "id": 8,
           "label": "logo.jpg",
           "icon": "fa-file-image-o",
           "data": "PrimeFaces Logo"
         },
         {
-          "id":9,
+          "id": 9,
           "label": "primeui.png",
           "icon": "fa-file-image-o",
           "data": "PrimeUI Logo"
@@ -66,39 +66,39 @@
       ]
     },
     {
-      "id":10,
+      "id": 10,
       "label": "Movies",
       "data": "Movies Folder",
       "expandedIcon": "fa-folder-open",
       "collapsedIcon": "fa-folder",
       "editable": false,
       "children": [{
-          "id":11,
+          "id": 11,
           "label": "Al Pacino",
           "data": "Pacino Movies",
           "children": [{
-            "id":12,
+            "id": 12,
             "label": "Scarface",
             "icon": "fa-file-video-o",
             "data": "Scarface Movie"
           }, {
-            "id":13,
+            "id": 13,
             "label": "Serpico",
             "icon": "fa-file-video-o",
             "data": "Serpico Movie"
           }]
         },
         {
-          "id":14,
+          "id": 14,
           "label": "Robert De Niro",
           "data": "De Niro Movies",
           "children": [{
-            "id":15,
+            "id": 15,
             "label": "Goodfellas",
             "icon": "fa-file-video-o",
             "data": "Goodfellas Movie"
           }, {
-            "id":16,
+            "id": 16,
             "label": "Untouchables",
             "icon": "fa-file-video-o",
             "data": "Untouchables Movie"

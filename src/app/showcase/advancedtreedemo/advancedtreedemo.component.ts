@@ -97,6 +97,7 @@ export class AdvancedTreeDemo implements OnInit {
 
         this.filesTree8 = [
             {
+                id: 1,
                 label: 'Backup',
                 data: 'Backup Folder',
                 expandedIcon: 'fa-folder-open',
@@ -105,6 +106,7 @@ export class AdvancedTreeDemo implements OnInit {
         ];
         this.filesTree9 = [
             {
+                id: 1,
                 label: 'Storage',
                 data: 'Storage Folder',
                 expandedIcon: 'fa-folder-open',
@@ -114,6 +116,7 @@ export class AdvancedTreeDemo implements OnInit {
         this.nodeService.getFiles().then(files => this.filesTree10 = files);
         this.nodeService.getFiles().then(files => {
             this.filesTree11 = [{
+                id: 1,
                 label: 'Root',
                 children: files
             }];
