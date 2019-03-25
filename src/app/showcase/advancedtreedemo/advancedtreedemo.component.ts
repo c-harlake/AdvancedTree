@@ -186,6 +186,11 @@ export class AdvancedTreeDemo implements OnInit {
         } );
     }
 
+    renamed(node: AdvancedTreeNode) {
+        console.log('renamed ' + node.label);
+        this.msgs.push({severity: 'info', summary: 'Node Renamed', detail: node.label});
+    }
+
     private expandRecursive(node: AdvancedTreeNode, isExpand: boolean) {
         node.expanded = isExpand;
         if (node.children) {

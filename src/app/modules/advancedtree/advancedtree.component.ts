@@ -41,8 +41,6 @@ export class UIAdvancedTreeNode implements OnInit {
 
     isEditing = false; // for checking node is in editing mode or not
 
-    editableNodeText = ''; // for appending text and assigning after focusout of currently editing node
-
     private lastclickedNode: AdvancedTreeNode = null;
     private lastclickedDate = 0;
 
@@ -59,11 +57,11 @@ export class UIAdvancedTreeNode implements OnInit {
     makeEditable = (node: AdvancedTreeNode) => {
         let nodeId = (this.isNumeric(node.id) === true) ? node.id.toString() : '';
         node.editable = true;
-        if (this.tree.lastNodeInEditingMode.length > 0) {
-            this.tree.lastNodeInEditingMode[0].editable = false;
-            this.tree.lastNodeInEditingMode = [];
+        if (this.tree.lastNodeInEditingMode !== null) {
+            this.tree.lastNodeInEditingMode.editable = false;       // would most likely not work because it is a new ref now
+            this.tree.lastNodeInEditingMode = null;
         }
-        this.tree.lastNodeInEditingMode.push(node);
+        this.tree.lastNodeInEditingMode = { ...node };
         setTimeout(() => {
             nodeId = nodeId.length > 0 ? nodeId : '0';
             let element: HTMLInputElement = <HTMLInputElement>document.getElementById('editableInput_' + nodeId + '');
@@ -75,31 +73,28 @@ export class UIAdvancedTreeNode implements OnInit {
 
     private makeReadable = (node: AdvancedTreeNode) => {
         node.editable = false;
-        if (this.tree.lastNodeInEditingMode.length > 0) {
-            this.tree.lastNodeInEditingMode[0].editable = false;
-            if ( node.label !== this.tree.lastNodeInEditingMode[0].label ) {
-                this.tree.onNodeRenamed.emit(node);
-            }
-            this.tree.lastNodeInEditingMode = [];
+        if (this.tree.lastNodeInEditingMode !== null) {
+            this.tree.lastNodeInEditingMode.editable = false;
+            this.tree.lastNodeInEditingMode = null;
         }
     }
 
-    changeNodeLabel = (node: AdvancedTreeNode) => {
-        node.label = this.editableNodeText.length > 0 ? this.editableNodeText : node.label;
-        this.makeReadable(node);
-        this.editableNodeText = '';
+    cancelRename = (node: AdvancedTreeNode) => {
+        node.label = this.tree.lastNodeInEditingMode.label;
+        this.tree.onNodeRenamed.emit(node);
     }
 
-    inputChangeHandler = (event: any) => {
-        this.editableNodeText = event.target.value;
+    inputChangeHandler = (event: any, node: AdvancedTreeNode) => {
+        node.label = event.target.value;
+        this.tree.onNodeRenamed.emit(node);
     }
 
     eventHandler = (event, node: AdvancedTreeNode) => {
         if (event.keyCode === 13) {
-            this.changeNodeLabel(node);
             this.makeReadable(node);
         }
         if (event.keyCode === 27) {
+            this.cancelRename(node);
             this.makeReadable(node);
         }
     }
@@ -451,7 +446,7 @@ export class AdvancedTree implements OnInit, AfterContentInit, OnDestroy, Advanc
 
     public dragStopSubscription: Subscription;
 
-    public lastNodeInEditingMode = [];
+    public lastNodeInEditingMode: AdvancedTreeNode = null;
 
     private clicks = 0;
 

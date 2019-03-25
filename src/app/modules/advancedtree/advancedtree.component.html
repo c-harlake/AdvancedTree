@@ -16,7 +16,7 @@
         </div><span [class]="getIcon()" *ngIf="node.icon||node.expandedIcon||node.collapsedIcon"></span>
         <span class="ui-treenode-label ui-corner-all"
           [ngClass]="{'ui-state-highlight':isSelected() && !node.editable}">
-          <input type="text" class="editableInput" value="{{node.label}}" id="editableInput_{{node.id}}" *ngIf="node.editable" (input)="inputChangeHandler($event)" (blur)="changeNodeLabel(node)" (keydown)="eventHandler($event, node)" />
+          <input type="text" class="editableInput" [value]="node.label" id="editableInput_{{node.id}}" *ngIf="node.editable" (input)="inputChangeHandler($event, node)" (blur)="makeReadable(node)" (keydown)="eventHandler($event, node)" />
           <span *ngIf="!tree.getTemplateForNode(node) && !node.editable" id="{{node.id}}">{{node.label}}</span>
           <span *ngIf="tree.getTemplateForNode(node)">
             <ng-container *ngTemplateOutlet="tree.getTemplateForNode(node); context: {$implicit: node}"></ng-container>
