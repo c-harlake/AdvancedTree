@@ -8,7 +8,6 @@ import {PrimeAdvancedTemplate} from '../common/advancedshared';
 import {AdvancedBlockableUI} from '../common/advancedblockableui';
 import {AdvancedTreeDragDropService} from '../common/advancedtreedragdropservice';
 import {Subscription} from 'rxjs/Subscription';
-import { Tree } from 'primeng/primeng';
 
 @Component({
     // tslint:disable-next-line:component-selector
@@ -17,7 +16,7 @@ import { Tree } from 'primeng/primeng';
     styles: ['.editableInput { box-sizing: border-box; border-radius: 0.2em; border: 1px solid silver; height: 19px;}']
 })
 // tslint:disable-next-line:component-class-suffix
-export class UIAdvancedTreeNode implements OnInit {
+export class UIAdvancedTreeNode implements OnInit, OnDestroy {
 
     static ICON_CLASS = 'ui-treenode-icon fa fa-fw';
 
@@ -39,6 +38,10 @@ export class UIAdvancedTreeNode implements OnInit {
 
     draghoverNode: boolean;
 
+    // makeEditableEmitter: EventEmitter<AdvancedTreeNode> = new EventEmitter<AdvancedTreeNode>();
+
+    toMakeEditableSub: Subscription = null;
+
     isEditing = false; // for checking node is in editing mode or not
 
     private lastclickedNode: AdvancedTreeNode = null;
@@ -48,6 +51,10 @@ export class UIAdvancedTreeNode implements OnInit {
 
     ngOnInit() {
         this.node.parent = this.parentNode;
+
+        this.toMakeEditableSub = this.tree.toMakeEditable.subscribe((advTreeNode: AdvancedTreeNode) => {
+            this.makeEditable(advTreeNode);
+        })
     }
 
     isNumeric(n: any): boolean {
@@ -311,6 +318,10 @@ export class UIAdvancedTreeNode implements OnInit {
             }
         }
     }
+
+    ngOnDestroy() {
+        this.toMakeEditableSub.unsubscribe();
+    }
 }
 
 @Component({
@@ -445,6 +456,8 @@ export class AdvancedTree implements OnInit, AfterContentInit, OnDestroy, Advanc
     public dragStartSubscription: Subscription;
 
     public dragStopSubscription: Subscription;
+
+    public toMakeEditable: EventEmitter<AdvancedTreeNode> = new EventEmitter<AdvancedTreeNode>();
 
     public lastNodeInEditingMode: AdvancedTreeNode = null;
 
@@ -974,6 +987,10 @@ export class AdvancedTree implements OnInit, AfterContentInit, OnDestroy, Advanc
             event.dataTransfer.dropEffect = 'move';
             event.preventDefault();
         }
+    }
+
+    makeNodeEditable(advTreeNode: AdvancedTreeNode){
+        this.toMakeEditable.emit(advTreeNode);
     }
 
     onDrop(event) {
