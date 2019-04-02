@@ -1132,9 +1132,9 @@ export class AdvancedTree implements OnInit, AfterContentInit, OnDestroy, Advanc
         }
     }
 }
-@NgModule({
-    imports: [CommonModule],
-    exports: [AdvancedTree, AdvancedSharedModule],
-    declarations: [AdvancedTree, UIAdvancedTreeNode]
-})
-export class AdvancedTreeModule { }
+// @NgModule({
+//     imports: [CommonModule],
+//     exports: [AdvancedTree, AdvancedSharedModule],
+//     declarations: [AdvancedTree, UIAdvancedTreeNode]
+// })
+// export class AdvancedTreeModule { }
