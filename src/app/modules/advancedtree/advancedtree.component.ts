@@ -98,7 +98,13 @@ export class UIAdvancedTreeNode implements OnInit, OnDestroy {
 
     eventHandler = (event, node: AdvancedTreeNode) => {
         if (event.keyCode === 13) {
-            this.makeReadable(node);
+            if (node.label.length < 1) {
+                // To avoid empty label
+                return;
+            }
+            else {
+                this.makeReadable(node);
+            }
         }
         if (event.keyCode === 27) {
             this.cancelRename(node);
