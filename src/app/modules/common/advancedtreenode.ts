@@ -1,5 +1,5 @@
 export interface AdvancedTreeNode {
-    id: number;
+    id: string;
     label?: string;
     data?: any;
     icon?: any;

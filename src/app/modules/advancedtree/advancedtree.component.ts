@@ -1,13 +1,15 @@
-import {NgModule, Component, Input, AfterContentInit, OnDestroy, Output, EventEmitter, OnInit,
-    ContentChildren, QueryList, TemplateRef, Inject, ElementRef, forwardRef} from '@angular/core';
-import {Optional} from '@angular/core';
-import {CommonModule} from '@angular/common';
-import {AdvancedTreeNode} from '../common/advancedtreenode';
-import {AdvancedSharedModule} from '../common/advancedshared';
-import {PrimeAdvancedTemplate} from '../common/advancedshared';
-import {AdvancedBlockableUI} from '../common/advancedblockableui';
-import {AdvancedTreeDragDropService} from '../common/advancedtreedragdropservice';
-import {Subscription} from 'rxjs/Subscription';
+import {
+    NgModule, Component, Input, AfterContentInit, OnDestroy, Output, EventEmitter, OnInit,
+    ContentChildren, QueryList, TemplateRef, Inject, ElementRef, forwardRef
+} from '@angular/core';
+import { Optional } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { AdvancedTreeNode } from '../common/advancedtreenode';
+import { AdvancedSharedModule } from '../common/advancedshared';
+import { PrimeAdvancedTemplate } from '../common/advancedshared';
+import { AdvancedBlockableUI } from '../common/advancedblockableui';
+import { AdvancedTreeDragDropService } from '../common/advancedtreedragdropservice';
+import { Subscription } from 'rxjs/Subscription';
 
 @Component({
     // tslint:disable-next-line:component-selector
@@ -47,7 +49,7 @@ export class UIAdvancedTreeNode implements OnInit, OnDestroy {
     private lastclickedNode: AdvancedTreeNode = null;
     private lastclickedDate = 0;
 
-    constructor(@Inject(forwardRef(() => AdvancedTree)) public tree: AdvancedTree) {}
+    constructor(@Inject(forwardRef(() => AdvancedTree)) public tree: AdvancedTree) { }
 
     ngOnInit() {
         this.node.parent = this.parentNode;
@@ -62,20 +64,32 @@ export class UIAdvancedTreeNode implements OnInit, OnDestroy {
     }
 
     makeEditable = (node: AdvancedTreeNode) => {
-        let nodeId = (this.isNumeric(node.id) === true) ? node.id.toString() : '';
-        node.editable = true;
-        if (this.tree.lastNodeInEditingMode !== null) {
-            this.tree.lastNodeInEditingMode.editable = false;       // would most likely not work because it is a new ref now
-            this.tree.lastNodeInEditingMode = null;
-        }
-        this.tree.lastNodeInEditingMode = { ...node };
-        setTimeout(() => {
-            nodeId = nodeId.length > 0 ? nodeId : '0';
-            let element: HTMLInputElement = <HTMLInputElement>document.getElementById('editableInput_' + nodeId + '');
-            if ( element !== null ) {
-                element.focus();
+        if ( this.node === node ) {
+            let nodeId = node.id;
+            node.editable = true;
+            if (this.tree.lastNodeInEditingMode !== null) {
+                this.tree.lastNodeInEditingMode.editable = false;       // would most likely not work because it is a new ref now
+                this.tree.lastNodeInEditingMode = null;
             }
-        }, 0);
+            this.tree.lastNodeInEditingMode = { ...node };
+            setTimeout(() => {
+                let element: HTMLInputElement = <HTMLInputElement>document.getElementById('editableInput_' + nodeId + '');
+                if (element !== null) {
+                    element.focus();
+                }
+            }, 0);
+        }
+    }
+
+    private changeOnBlur = (node: AdvancedTreeNode) => {
+        const checkRegExp: RegExp = /^\s*$/;
+        if (node.label.length > 0 && !checkRegExp.test(node.label)) {
+            this.makeReadable(node);
+        }
+        else {
+            this.cancelRename(node);
+            this.makeReadable(node);
+        }
     }
 
     private makeReadable = (node: AdvancedTreeNode) => {
@@ -130,21 +144,22 @@ export class UIAdvancedTreeNode implements OnInit, OnDestroy {
 
     toggle(event: Event) {
         if (this.node.expanded) {
-            this.tree.onNodeCollapse.emit({originalEvent: event, node: this.node});
+            this.tree.onNodeCollapse.emit({ originalEvent: event, node: this.node });
         }
         else {
-            this.tree.onNodeExpand.emit({originalEvent: event, node: this.node});
+            this.tree.onNodeExpand.emit({ originalEvent: event, node: this.node });
         }
         this.node.expanded = !this.node.expanded;
     }
 
     onNodeClick(event: MouseEvent) {
-        if ( this.tree.inlineEdit === true ) {
+        console.log(this.tree.treeName);
+        if (this.tree.inlineEdit === true) {
             let d = new Date();
             let currentDate = d.getTime()
-            if ( this.node !== null && this.lastclickedNode === this.node && this.isSelected() === true &&
-                ( currentDate - this.lastclickedDate ) > this.tree.doubleClickTimeout &&
-                ( currentDate - this.lastclickedDate ) < this.tree.slowDoubleClickTimeout ) {
+            if (this.node !== null && this.lastclickedNode === this.node && this.isSelected() === true &&
+                (currentDate - this.lastclickedDate) > this.tree.doubleClickTimeout &&
+                (currentDate - this.lastclickedDate) < this.tree.slowDoubleClickTimeout) {
                 this.makeEditable(this.node);
                 this.lastclickedDate = 0;
                 this.lastclickedNode = null;
@@ -195,7 +210,7 @@ export class UIAdvancedTreeNode implements OnInit, OnDestroy {
 
             if (position < 0) {
                 dropIndex = (this.tree.dragNodeSubNodes === newNodeList) ?
-                 ((this.tree.dragNodeIndex > this.index) ? this.index : this.index - 1) : this.index;
+                    ((this.tree.dragNodeIndex > this.index) ? this.index : this.index - 1) : this.index;
                 newNodeList.splice(dropIndex, 0, dragNode);
             }
             else {
@@ -310,7 +325,7 @@ export class UIAdvancedTreeNode implements OnInit, OnDestroy {
 
     onDropNodeDragEnter(event) {
         if (this.tree.droppableNodes && this.node.droppable !== false
-                  && this.tree.allowDrop(this.tree.dragNode, this.node, this.tree.dragNodeScope)) {
+            && this.tree.allowDrop(this.tree.dragNode, this.node, this.tree.dragNodeScope)) {
             this.draghoverNode = true;
         }
     }
@@ -320,7 +335,7 @@ export class UIAdvancedTreeNode implements OnInit, OnDestroy {
             let rect = event.currentTarget.getBoundingClientRect();
             if (event.x > rect.left + rect.width || event.x < rect.left
                 || event.y >= Math.floor(rect.top + rect.height) || event.y < rect.top) {
-               this.draghoverNode = false;
+                this.draghoverNode = false;
             }
         }
     }
@@ -364,6 +379,8 @@ export class UIAdvancedTreeNode implements OnInit, OnDestroy {
 export class AdvancedTree implements OnInit, AfterContentInit, OnDestroy, AdvancedBlockableUI {
 
     @Input() value: AdvancedTreeNode[];
+
+    @Input() treeName: string;
 
     @Input() selectionMode: string;
 
@@ -431,7 +448,7 @@ export class AdvancedTree implements OnInit, AfterContentInit, OnDestroy, Advanc
 
     @Input() propagateSelectionDown = false;
 
-    @Input() propagateCheckedUp= false;
+    @Input() propagateCheckedUp = false;
 
     @Input() propagateCheckedDown = false;
 
@@ -469,28 +486,28 @@ export class AdvancedTree implements OnInit, AfterContentInit, OnDestroy, Advanc
 
     private clicks = 0;
 
-    constructor(public el: ElementRef, @Optional() public dragDropService: AdvancedTreeDragDropService) {}
+    constructor(public el: ElementRef, @Optional() public dragDropService: AdvancedTreeDragDropService) { }
 
     ngOnInit() {
         if (this.droppableNodes) {
             this.dragStartSubscription = this.dragDropService.dragStart$.subscribe(
-              event => {
-                this.dragNodeTree = event.tree;
-                this.dragNode = event.node;
-                this.dragNodeSubNodes = event.subNodes;
-                this.dragNodeIndex = event.index;
-                this.dragNodeScope = event.scope;
-            });
+                event => {
+                    this.dragNodeTree = event.tree;
+                    this.dragNode = event.node;
+                    this.dragNodeSubNodes = event.subNodes;
+                    this.dragNodeIndex = event.index;
+                    this.dragNodeScope = event.scope;
+                });
 
             this.dragStopSubscription = this.dragDropService.dragStop$.subscribe(
-              event => {
-                this.dragNodeTree = null;
-                this.dragNode = null;
-                this.dragNodeSubNodes = null;
-                this.dragNodeIndex = null;
-                this.dragNodeScope = null;
-                this.dragHover = false;
-            });
+                event => {
+                    this.dragNodeTree = null;
+                    this.dragNode = null;
+                    this.dragNodeSubNodes = null;
+                    this.dragNodeIndex = null;
+                    this.dragNodeScope = null;
+                    this.dragHover = false;
+                });
         }
     }
 
@@ -512,8 +529,8 @@ export class AdvancedTree implements OnInit, AfterContentInit, OnDestroy, Advanc
         if (node.editable) {
             return false;
         }
-        if ( this.selection === null) {
-            if ( this.isSingleSelectionMode() ) {
+        if (this.selection === null) {
+            if (this.isSingleSelectionMode()) {
                 this.selection = null;
             }
             else {
@@ -522,13 +539,13 @@ export class AdvancedTree implements OnInit, AfterContentInit, OnDestroy, Advanc
         }
         this.clicks++;
 
-        if ( this.clicks === 1 ) {
-            setTimeout( () => {
-                if ( this.clicks === 1 ) {
+        if (this.clicks === 1) {
+            setTimeout(() => {
+                if (this.clicks === 1) {
                     this.onNodeSingleClick(event, node);
                 }
                 else {
-                    this.onNodeDblClick.emit({originalEvent: event, node: node});
+                    this.onNodeDblClick.emit({ originalEvent: event, node: node });
                 }
                 this.clicks = 0;
             }, this.doubleClickTimeout);
@@ -536,7 +553,7 @@ export class AdvancedTree implements OnInit, AfterContentInit, OnDestroy, Advanc
     }
 
     onNodeSingleClick(event: MouseEvent, node: AdvancedTreeNode) {
-        let eventTarget = (<Element> event.target);
+        let eventTarget = (<Element>event.target);
         let addedNodes: AdvancedTreeNode[] = [];
         let removedNodes: AdvancedTreeNode[] = [];
 
@@ -563,7 +580,7 @@ export class AdvancedTree implements OnInit, AfterContentInit, OnDestroy, Advanc
                     }
 
                     this.checkedChange.emit(this.checked);
-                    this.onNodeUnchecked.emit({originalEvent: event, node: node});
+                    this.onNodeUnchecked.emit({ originalEvent: event, node: node });
                 }
                 else {
                     if (this.propagateCheckedDown) {
@@ -571,7 +588,7 @@ export class AdvancedTree implements OnInit, AfterContentInit, OnDestroy, Advanc
                     }
                     else {
                         let idx = this.findIndexInPartialChecked(node);
-                        if ( idx > -1 ) {
+                        if (idx > -1) {
                             this.partialchecked.splice(idx, 1);
                         }
                         this.checked = [...this.checked || [], node];
@@ -581,7 +598,7 @@ export class AdvancedTree implements OnInit, AfterContentInit, OnDestroy, Advanc
                     }
 
                     this.checkedChange.emit(this.checked);
-                    this.onNodeChecked.emit({originalEvent: event, node: node});
+                    this.onNodeChecked.emit({ originalEvent: event, node: node });
                 }
             }
         }
@@ -594,9 +611,9 @@ export class AdvancedTree implements OnInit, AfterContentInit, OnDestroy, Advanc
             let metaSelection = this.nodeTouched ? false : this.metaKeySelection;
             let metaKey = (event.metaKey || event.ctrlKey);
 
-            if ( selected ) {
+            if (selected) {
                 // node already selected
-                if ( this.isSingleSelectionMode() ) {
+                if (this.isSingleSelectionMode()) {
                     // single selection, just clear selection
                     removedNodes.push(this.selection);
                     this.selection = [];
@@ -605,12 +622,12 @@ export class AdvancedTree implements OnInit, AfterContentInit, OnDestroy, Advanc
                     // this.onNodeUnselect.emit({originalEvent: event, node: node});
                 }
                 else {
-                    if ( metaSelection ) {
-                        if ( metaKey ) {
+                    if (metaSelection) {
+                        if (metaKey) {
                             // metakey multiselection, remove node from selection
                             removedNodes.push(node);
                             this.selection = this.selection.filter((val, i) => i !== index);
-                            if ( this.propagateSelectionDown ) {
+                            if (this.propagateSelectionDown) {
                                 this.propagateDown(node, addedNodes, removedNodes, false); //
                             }
                             // this.selectionChange.emit(this.selection);
@@ -632,7 +649,7 @@ export class AdvancedTree implements OnInit, AfterContentInit, OnDestroy, Advanc
                             // ++++ novo like behaviour ++++
                             removedNodes.push(node);
                             this.selection = this.selection.filter((val, i) => i !== index);
-                            if ( this.propagateSelectionDown ) {
+                            if (this.propagateSelectionDown) {
                                 this.propagateDown(node, addedNodes, removedNodes, false);
                             }
                             // this.selectionChange.emit(this.selection);
@@ -645,7 +662,7 @@ export class AdvancedTree implements OnInit, AfterContentInit, OnDestroy, Advanc
                         // multiselection, remove node from selection
                         removedNodes.push(node);
                         this.selection = this.selection.filter((val, i) => i !== index);
-                        if ( this.propagateSelectionDown ) {
+                        if (this.propagateSelectionDown) {
                             this.propagateDown(node, addedNodes, removedNodes, false);
                         }
                         // this.selectionChange.emit(this.selection);
@@ -653,13 +670,13 @@ export class AdvancedTree implements OnInit, AfterContentInit, OnDestroy, Advanc
                         // this.onNodeUnselect.emit({originalEvent: event, node: node});
                     }
                 }
-                this.onNodeUnselect.emit({originalEvent: event, node: node});
+                this.onNodeUnselect.emit({ originalEvent: event, node: node });
             }
             else {
                 // necessary for all conditions within
                 addedNodes.push(node);
                 // node not selected
-                if ( this.isSingleSelectionMode() ) {
+                if (this.isSingleSelectionMode()) {
                     // single selection, just set node as selection
                     if (this.selection) {
                         removedNodes.push(this.selection);
@@ -669,11 +686,11 @@ export class AdvancedTree implements OnInit, AfterContentInit, OnDestroy, Advanc
                     // this.onNodeSelect.emit({originalEvent: event, node: node});
                 }
                 else {
-                    if ( metaSelection ) {
-                        if ( metaKey ) {
+                    if (metaSelection) {
+                        if (metaKey) {
                             // metakey multiselection, add node to selection
                             this.selection = [...this.selection || [], node];
-                            if ( this.propagateSelectionDown ) {
+                            if (this.propagateSelectionDown) {
                                 this.propagateDown(node, addedNodes, removedNodes, true);
                             }
                             // this.selectionChange.emit(this.selection);
@@ -682,12 +699,12 @@ export class AdvancedTree implements OnInit, AfterContentInit, OnDestroy, Advanc
                         }
                         else {
                             // metakey multiselection, just set node as selected
-                            if ( this.selection) {
+                            if (this.selection) {
                                 removedNodes = this.selection;
                             }
                             this.selection = [];
                             this.selection = [...this.selection, node];
-                            if ( this.propagateSelectionDown ) {
+                            if (this.propagateSelectionDown) {
                                 this.propagateDown(node, addedNodes, removedNodes, true);
                             }
                             // this.selectionChange.emit(this.selection);
@@ -698,7 +715,7 @@ export class AdvancedTree implements OnInit, AfterContentInit, OnDestroy, Advanc
                     else {
                         // multiselection, just add node to selection
                         this.selection = [...this.selection || [], node];
-                        if ( this.propagateSelectionDown ) {
+                        if (this.propagateSelectionDown) {
                             this.propagateDown(node, addedNodes, removedNodes, true);
                         }
                         // this.selectionChange.emit(this.selection);
@@ -706,7 +723,7 @@ export class AdvancedTree implements OnInit, AfterContentInit, OnDestroy, Advanc
                         // this.onNodeSelect.emit({originalEvent: event, node: node});
                     }
                 }
-                this.onNodeSelect.emit({originalEvent: event, node: node});
+                this.onNodeSelect.emit({ originalEvent: event, node: node });
             }
             this.selectionChange.emit(this.selection);
             this.addedNodesChange.emit(addedNodes);
@@ -723,7 +740,7 @@ export class AdvancedTree implements OnInit, AfterContentInit, OnDestroy, Advanc
         let addedNodes: AdvancedTreeNode[] = [];
         let removedNodes: AdvancedTreeNode[] = [];
         if (this.contextMenu) {
-            let eventTarget = (<Element> event.target);
+            let eventTarget = (<Element>event.target);
 
             if (eventTarget.className && eventTarget.className.indexOf('ui-tree-toggler') === 0) {
                 return;
@@ -749,15 +766,15 @@ export class AdvancedTree implements OnInit, AfterContentInit, OnDestroy, Advanc
 
                 if (!selected) {
                     if (this.isSingleSelectionMode()) {
-                        this.selectionChange.emit({selectionList: this.selection, addedList: addedNodes, removedList: removedNodes});
+                        this.selectionChange.emit({ selectionList: this.selection, addedList: addedNodes, removedList: removedNodes });
                     }
                     else {
-                        this.selectionChange.emit({selectionList: this.selection, addedList: addedNodes, removedList: removedNodes});
+                        this.selectionChange.emit({ selectionList: this.selection, addedList: addedNodes, removedList: removedNodes });
                     }
                 }
 
                 this.contextMenu.show(event);
-                this.onNodeContextMenuSelect.emit({originalEvent: event, node: node});
+                this.onNodeContextMenuSelect.emit({ originalEvent: event, node: node });
             }
         }
     }
@@ -771,7 +788,7 @@ export class AdvancedTree implements OnInit, AfterContentInit, OnDestroy, Advanc
             }
             else {
 
-                for (let i = 0; i  < this.selection.length; i++) {
+                for (let i = 0; i < this.selection.length; i++) {
                     if (this.selection[i] === node) {
                         index = i;
                         break;
@@ -788,7 +805,7 @@ export class AdvancedTree implements OnInit, AfterContentInit, OnDestroy, Advanc
 
         if (this.selectionMode && this.checked) {
             if (this.isCheckboxMode()) {
-                for (let i = 0; i  < this.checked.length; i++) {
+                for (let i = 0; i < this.checked.length; i++) {
                     if (this.checked[i] === node) {
                         index = i;
                         break;
@@ -805,7 +822,7 @@ export class AdvancedTree implements OnInit, AfterContentInit, OnDestroy, Advanc
 
         if (this.selectionMode && this.partialchecked) {
             if (this.isCheckboxMode()) {
-                for (let i = 0; i  < this.partialchecked.length; i++) {
+                for (let i = 0; i < this.partialchecked.length; i++) {
                     if (this.partialchecked[i] === node) {
                         index = i;
                         break;
@@ -826,7 +843,7 @@ export class AdvancedTree implements OnInit, AfterContentInit, OnDestroy, Advanc
                     selectedCount++;
                 }
                 // else if (child.partialSelected) {
-                    // childPartialSelected = true;
+                // childPartialSelected = true;
                 // }
             }
 
@@ -897,7 +914,7 @@ export class AdvancedTree implements OnInit, AfterContentInit, OnDestroy, Advanc
                 this.checked = [...this.checked || [], node];
                 node.partialChecked = false;
                 let idx = this.findIndexInPartialChecked(node);
-                if ( idx > -1 ) {
+                if (idx > -1) {
                     this.partialchecked.splice(idx, 1);
                 }
             }
@@ -912,14 +929,14 @@ export class AdvancedTree implements OnInit, AfterContentInit, OnDestroy, Advanc
                 if (childPartialChecked || checkedCount > 0 && checkedCount !== node.children.length) {
                     node.partialChecked = true;
                     let idx = this.findIndexInPartialChecked(node);
-                    if ( idx > -1 ) {
+                    if (idx > -1) {
                         this.partialchecked.push(node);
                     }
                 }
                 else {
                     node.partialChecked = false;
                     let idx = this.findIndexInPartialChecked(node);
-                    if ( idx > -1 ) {
+                    if (idx > -1) {
                         this.partialchecked.splice(idx, 1);
                     }
                 }
@@ -944,7 +961,7 @@ export class AdvancedTree implements OnInit, AfterContentInit, OnDestroy, Advanc
 
         node.partialChecked = false;
         let idx = this.findIndexInPartialChecked(node);
-        if ( idx > -1 ) {
+        if (idx > -1) {
             this.partialchecked.splice(idx, 1);
         }
 
@@ -995,7 +1012,7 @@ export class AdvancedTree implements OnInit, AfterContentInit, OnDestroy, Advanc
         }
     }
 
-    makeNodeEditable(advTreeNode: AdvancedTreeNode){
+    makeNodeEditable(advTreeNode: AdvancedTreeNode) {
         this.toMakeEditable.emit(advTreeNode);
     }
 
@@ -1026,7 +1043,7 @@ export class AdvancedTree implements OnInit, AfterContentInit, OnDestroy, Advanc
         if (this.droppableNodes) {
             let rect = event.currentTarget.getBoundingClientRect();
             if (event.x > rect.left + rect.width || event.x < rect.left || event.y > rect.top + rect.height || event.y < rect.top) {
-               this.dragHover = false;
+                this.dragHover = false;
             }
         }
     }
@@ -1094,8 +1111,8 @@ export class AdvancedTree implements OnInit, AfterContentInit, OnDestroy, Advanc
         }
     }
 
-    getBlockableElement(): HTMLElement {
-      return this.el.nativeElement.children[0];
+    getBlockableElement(): HTMLElement {
+        return this.el.nativeElement.children[0];
     }
 
     // expandToNode(node: AdvancedTreeNode) {
