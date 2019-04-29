@@ -64,7 +64,7 @@ export class UIAdvancedTreeNode implements OnInit, OnDestroy {
     }
 
     makeEditable = (node: AdvancedTreeNode) => {
-        if ( this.node === node ) {
+        if (this.node === node) {
             let nodeId = node.id;
             node.editable = true;
             if (this.tree.lastNodeInEditingMode !== null) {
@@ -153,7 +153,6 @@ export class UIAdvancedTreeNode implements OnInit, OnDestroy {
     }
 
     onNodeClick(event: MouseEvent) {
-        console.log(this.tree.treeName);
         if (this.tree.inlineEdit === true) {
             let d = new Date();
             let currentDate = d.getTime()
@@ -379,8 +378,6 @@ export class UIAdvancedTreeNode implements OnInit, OnDestroy {
 export class AdvancedTree implements OnInit, AfterContentInit, OnDestroy, AdvancedBlockableUI {
 
     @Input() value: AdvancedTreeNode[];
-
-    @Input() treeName: string;
 
     @Input() selectionMode: string;
 
