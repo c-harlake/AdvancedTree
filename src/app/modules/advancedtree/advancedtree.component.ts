@@ -111,10 +111,15 @@ export class UIAdvancedTreeNode implements OnInit, OnDestroy {
     }
 
     eventHandler = (event, node: AdvancedTreeNode) => {
+        const checkRegExp: RegExp = /^\s*$/;
         if (event.keyCode === 13) {
             if (node.label.length < 1) {
                 // To avoid empty label
                 return;
+            }
+            else if (checkRegExp.test(node.label)) {
+                this.cancelRename(node);
+                this.makeReadable(node);
             }
             else {
                 this.makeReadable(node);
