@@ -76,6 +76,7 @@ export class UIAdvancedTreeNode implements OnInit, OnDestroy {
                 let element: HTMLInputElement = <HTMLInputElement>document.getElementById('editableInput_' + nodeId + '');
                 if (element !== null) {
                     element.focus();
+                    element.setSelectionRange(this.node.label.length, this.node.label.length);
                 }
             }, 0);
         }
