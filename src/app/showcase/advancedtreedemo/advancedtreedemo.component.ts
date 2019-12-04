@@ -10,6 +10,7 @@ import {AdvancedTreeDragDropService} from '../../modules/common/api';
     templateUrl: './advancedtreedemo.component.html',
     providers: [AdvancedTreeDragDropService]
 })
+// tslint:disable-next-line:component-class-suffix
 export class AdvancedTreeDemo implements OnInit {
 
     msgs: Message[];
@@ -60,6 +61,9 @@ export class AdvancedTreeDemo implements OnInit {
     checkedFiles24: AdvancedTreeNode[];
     checkedFiles25: AdvancedTreeNode[];
 
+    addedfiles: AdvancedTreeNode[] = [];
+    removedfiles: AdvancedTreeNode[] = [];
+
     partialCheckedNodes: AdvancedTreeNode[] = [];
 
     items: MenuItem[];
@@ -93,6 +97,7 @@ export class AdvancedTreeDemo implements OnInit {
 
         this.filesTree8 = [
             {
+                id: "1",
                 label: 'Backup',
                 data: 'Backup Folder',
                 expandedIcon: 'fa-folder-open',
@@ -101,6 +106,7 @@ export class AdvancedTreeDemo implements OnInit {
         ];
         this.filesTree9 = [
             {
+                id: "1",
                 label: 'Storage',
                 data: 'Storage Folder',
                 expandedIcon: 'fa-folder-open',
@@ -110,6 +116,7 @@ export class AdvancedTreeDemo implements OnInit {
         this.nodeService.getFiles().then(files => this.filesTree10 = files);
         this.nodeService.getFiles().then(files => {
             this.filesTree11 = [{
+                id: "1",
                 label: 'Root',
                 children: files
             }];
@@ -121,6 +128,19 @@ export class AdvancedTreeDemo implements OnInit {
             {label: 'View', icon: 'fa-search', command: (event) => this.viewFile(this.selectedFile2)},
             {label: 'Unselect', icon: 'fa-close', command: (event) => this.unselectFile()}
         ];
+    }
+
+    selectionChanged(event) {
+        // this.addedfiles = event.data;
+        // this.removedfiles = event.data;
+    }
+
+    addedChanged(event) {
+        this.addedfiles = event;
+    }
+
+    removedChanged(event) {
+        this.removedfiles = event;
     }
 
     nodeSelect(event) {
@@ -164,6 +184,11 @@ export class AdvancedTreeDemo implements OnInit {
         this.filesTree10.forEach( node => {
             this.expandRecursive(node, false);
         } );
+    }
+
+    renamed(node: AdvancedTreeNode) {
+        console.log('renamed ' + node.label);
+        this.msgs.push({severity: 'info', summary: 'Node Renamed', detail: node.label});
     }
 
     private expandRecursive(node: AdvancedTreeNode, isExpand: boolean) {

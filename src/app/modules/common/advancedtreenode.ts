@@ -1,5 +1,5 @@
 export interface AdvancedTreeNode {
-    id?: number;
+    id: string;
     label?: string;
     data?: any;
     icon?: any;
@@ -8,6 +8,7 @@ export interface AdvancedTreeNode {
     children?: AdvancedTreeNode [];
     leaf?: boolean;
     expanded?: boolean;
+    editable?: boolean;
     type?: string;
     parent?: AdvancedTreeNode;
     partialChecked?: boolean;

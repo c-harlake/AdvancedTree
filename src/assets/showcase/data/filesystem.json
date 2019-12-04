@@ -3,6 +3,7 @@
     [  
         {  
             "data":{  
+                "id": 1,
                 "name":"Documents",
                 "size":"75kb",
                 "type":"Folder"
@@ -10,6 +11,7 @@
             "children":[
                 {  
                     "data":{  
+                        "id": 2,
                         "name":"Work",
                         "size":"55kb",
                         "type":"Folder"
@@ -17,6 +19,7 @@
                     "children":[  
                         {  
                             "data":{  
+                                "id": 3,
                                 "name":"Expenses.doc",
                                 "size":"30kb",
                                 "type":"Document"
@@ -24,6 +27,7 @@
                         },
                         {  
                             "data":{  
+                                "id": 4,
                                 "name":"Resume.doc",
                                 "size":"25kb",
                                 "type":"Resume"
@@ -33,13 +37,15 @@
                 },
                 {  
                     "data":{  
+                        "id": 5,
                         "name":"Home",
                         "size":"20kb",
                         "type":"Folder"
                     },
                     "children":[  
                         {  
-                            "data":{  
+                            "data":{ 
+                                "id": 6, 
                                 "name":"Invoices",
                                 "size":"20kb",
                                 "type":"Text"
@@ -50,7 +56,8 @@
             ]
         },
         {  
-            "data":{  
+            "data":{ 
+                "id": 7, 
                 "name":"Pictures",
                 "size":"150kb",
                 "type":"Folder"
@@ -58,6 +65,7 @@
             "children":[  
                 {  
                     "data":{  
+                        "id": 8,
                         "name":"barcelona.jpg",
                         "size":"90kb",
                         "type":"Picture"
@@ -65,6 +73,7 @@
                 },
                 {  
                     "data":{  
+                        "id": 9,
                         "name":"primeui.png",
                         "size":"30kb",
                         "type":"Picture"
@@ -72,6 +81,7 @@
                 },
                 {  
                     "data":{  
+                        "id": 10,
                         "name":"optimus.jpg",
                         "size":"30kb",
                         "type":"Picture"
