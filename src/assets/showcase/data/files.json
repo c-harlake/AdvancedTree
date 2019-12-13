@@ -1,6 +1,8 @@
 {
   "data": [{
       "id": 0,
+      "checked": false,
+      "partialChecked": false,
       "label": "Documents",
       "data": "Documents Folder",
       "expandedIcon": "fa-folder-open",
@@ -9,16 +11,22 @@
           "id": 1,
           "label": "Work",
           "data": "Work Folder",
+          "checked": false,
+          "partialChecked": false,
           "expandedIcon": "fa-folder-open",
           "collapsedIcon": "fa-folder",
           "children": [{
             "id": 2,
             "label": "Expenses.doc",
+            "checked": false,
+            "partialChecked": false,
             "icon": "fa-file-word-o",
             "data": "Expenses Document"
           }, {
             "id": 3,
             "label": "Resume.doc",
+            "checked": false,
+            "partialChecked": false,
             "icon": "fa-file-word-o",
             "data": "Resume Document"
           }]
@@ -27,11 +35,15 @@
           "id": 4,
           "label": "Home",
           "data": "Home Folder",
+          "checked": false,
+          "partialChecked": false,
           "expandedIcon": "fa-folder-open",
           "collapsedIcon": "fa-folder",
           "children": [{
             "id": 5,
             "label": "Invoices.txt",
+            "checked": false,
+            "partialChecked": false,
             "icon": "fa-file-word-o",
             "data": "Invoices for this month"
           }]
@@ -40,6 +52,8 @@
     },
     {
       "id": 6,
+      "checked": false,
+      "partialChecked": false,
       "label": "Pictures",
       "data": "Pictures Folder",
       "expandedIcon": "fa-folder-open",
@@ -48,18 +62,24 @@
       "children": [{
           "id": 7,
           "label": "barcelona.jpg",
+          "checked": false,
+          "partialChecked": false,
           "icon": "fa-file-image-o",
           "data": "Barcelona Photo"
         },
         {
           "id": 8,
           "label": "logo.jpg",
+          "checked": false,
+          "partialChecked": false,
           "icon": "fa-file-image-o",
           "data": "PrimeFaces Logo"
         },
         {
           "id": 9,
           "label": "primeui.png",
+          "checked": false,
+          "partialChecked": false,
           "icon": "fa-file-image-o",
           "data": "PrimeUI Logo"
         }
@@ -68,6 +88,8 @@
     {
       "id": 10,
       "label": "Movies",
+      "checked": true,
+      "partialChecked": false,
       "data": "Movies Folder",
       "expandedIcon": "fa-folder-open",
       "collapsedIcon": "fa-folder",
@@ -76,14 +98,20 @@
           "id": 11,
           "label": "Al Pacino",
           "data": "Pacino Movies",
+          "checked": true,
+          "partialChecked": false,
           "children": [{
             "id": 12,
             "label": "Scarface",
+            "checked": true,
+            "partialChecked": false,
             "icon": "fa-file-video-o",
             "data": "Scarface Movie"
           }, {
             "id": 13,
             "label": "Serpico",
+            "checked": true,
+            "partialChecked": false,
             "icon": "fa-file-video-o",
             "data": "Serpico Movie"
           }]
@@ -92,14 +120,20 @@
           "id": 14,
           "label": "Robert De Niro",
           "data": "De Niro Movies",
+          "checked": true,
+          "partialChecked": false,
           "children": [{
             "id": 15,
             "label": "Goodfellas",
+            "checked": true,
+            "partialChecked": false,
             "icon": "fa-file-video-o",
             "data": "Goodfellas Movie"
           }, {
             "id": 16,
             "label": "Untouchables",
+            "checked": true,
+            "partialChecked": false,
             "icon": "fa-file-video-o",
             "data": "Untouchables Movie"
           }]

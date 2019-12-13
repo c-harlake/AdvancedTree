@@ -30,26 +30,22 @@
     <div>Selected Nodes: <span *ngFor="let file of selectedFiles22">{{file.label}}</span></div>
 
     <h3>Checkbox and Single Selection</h3>
-    <p-atree [value]="filesTree23" [checkbox]=true selectionMode="single" [(selection)]="selectedFile23" [(checked)]="checkedFiles23"
+    <p-atree [value]="filesTree23" [checkbox]=true selectionMode="single" [(selection)]="selectedFile23" 
         (onNodeSelect)="nodeSelect($event)" (onNodeUnselect)="nodeUnselect($event)"></p-atree>
     <div style="margin-top:8px">Selected Node: {{selectedFile23 ? selectedFile23.label : 'none'}}</div>
-	<div>Checked Nodes: <span *ngFor="let file2 of checkedFiles23">{{file2.label}}</span></div>    
 
     <h3>Checkbox and Multiple Selection</h3>
     <p-atree [inlineEdit]=true [value]="filesTree24" [metaKeySelection]=false [checkbox]=true selectionMode="multiple" [(selection)]="selectedFiles24" 
-        [(checked)]="checkedFiles24" [(partialchecked)]="partialCheckedNodes" (onNodeSelect)="nodeSelect($event)" (onNodeUnselect)="nodeUnselect($event)" 
-        (addedNodesChange)="addedChanged($event)" (removedNodesChange)="removedChanged($event)" (onNodeRenamed)="renamed($event)"></p-atree>
+         (onNodeSelect)="nodeSelect($event)" (onNodeUnselect)="nodeUnselect($event)" 
+        (addedNodesChange)="addedChanged($event)" (removedNodesChange)="removedChanged($event)" (onNodeRenamed)="renamed($event)" [propagateCheckedUp]="true" [propagateCheckedDown]="true"></p-atree>
     <div>Selected Nodes: <span *ngFor="let file of selectedFiles24">{{file.label}}</span></div>     
-    <div>Checked Nodes: <span *ngFor="let file2 of checkedFiles24">{{file2.label}}</span></div>
-    <div>PartialChecked Nodes: <span *ngFor="let file3 of partialCheckedNodes">{{file3.label}}</span></div>
     <div>Added Nodes: <span *ngFor="let file4 of addedfiles">{{file4.label}}</span></div>
     <div>Removed Nodes: <span *ngFor="let file4 of removedfiles">{{file4.label}}</span></div>
 
     <h3>Checkbox and Multiple Selection with Metakey</h3>
-    <p-atree [value]="filesTree25" [metaKeySelection]=true [checkbox]=true selectionMode="multiple" [(selection)]="selectedFiles25" [(checked)]="checkedFiles25"
+    <p-atree [value]="filesTree25" [metaKeySelection]=true [checkbox]=true selectionMode="multiple" [(selection)]="selectedFiles25" 
         (onNodeSelect)="nodeSelect($event)" (onNodeUnselect)="nodeUnselect($event)" ></p-atree>
 	<div>Selected Nodes: <span *ngFor="let file of selectedFiles25">{{file.label}}</span></div>
-	<div>Checked Nodes: <span *ngFor="let file2 of checkedFiles25">{{file2.label}}</span></div>
 
     <h3>Lazy Loading</h3>
     <p-atree [value]="lazyFiles" (onNodeExpand)="nodeExpand($event)" [style]="{'max-height':'200px','overflow':'auto'}"></p-atree>

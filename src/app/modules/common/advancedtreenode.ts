@@ -18,5 +18,6 @@ export interface AdvancedTreeNode {
     droppable?: boolean;
     selectable?: boolean;
     checkable?: boolean;
+    selected?: boolean;
     nodeType?: any;
 }

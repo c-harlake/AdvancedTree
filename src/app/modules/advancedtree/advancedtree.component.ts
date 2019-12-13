@@ -194,11 +194,11 @@ export class UIAdvancedTreeNode implements OnInit, OnDestroy {
     }
 
     isChecked() {
-        return this.tree.isChecked(this.node);
+        return this.node.checked;
     }
 
     isPartialChecked() {
-        return this.tree.isPartialChecked(this.node);
+        return this.node.partialChecked;
     }
 
     onDropPoint(event: Event, position: number) {
@@ -393,10 +393,6 @@ export class AdvancedTree implements OnInit, AfterContentInit, OnDestroy, Advanc
 
     @Input() selection: any;
 
-    @Input() checked: any;
-
-    @Input() partialchecked: any;
-
     @Input() doubleClickTimeout: number = 250;
 
     @Input() slowDoubleClickTimeout: number = 1000;
@@ -568,21 +564,19 @@ export class AdvancedTree implements OnInit, AfterContentInit, OnDestroy, Advanc
                 return;
             }
 
-            let index = this.findIndexInChecked(node);
-            let checked = (index >= 0);
+            let checked = node.checked;
             if (this.isCheckboxMode()) {
                 if (checked) {
                     if (this.propagateCheckedDown) {
                         this.propagateChkDown(node, false);
                     }
                     else {
-                        this.checked = this.checked.filter((val, i) => i !== index);
+                        node.checked = false;
                     }
                     if (this.propagateCheckedUp && node.parent) {
                         this.propagateChkUp(node.parent, false);
                     }
 
-                    this.checkedChange.emit(this.checked);
                     this.onNodeUnchecked.emit({ originalEvent: event, node: node });
                 }
                 else {
@@ -590,17 +584,15 @@ export class AdvancedTree implements OnInit, AfterContentInit, OnDestroy, Advanc
                         this.propagateChkDown(node, true);
                     }
                     else {
-                        let idx = this.findIndexInPartialChecked(node);
-                        if (idx > -1) {
-                            this.partialchecked.splice(idx, 1);
+                        if (node.partialChecked) {
+                            node.partialChecked = false;
                         }
-                        this.checked = [...this.checked || [], node];
+                        node.checked = true;
                     }
                     if (this.propagateCheckedUp && node.parent) {
                         this.propagateChkUp(node.parent, true);
                     }
 
-                    this.checkedChange.emit(this.checked);
                     this.onNodeChecked.emit({ originalEvent: event, node: node });
                 }
             }
@@ -749,8 +741,7 @@ export class AdvancedTree implements OnInit, AfterContentInit, OnDestroy, Advanc
                 return;
             }
             else if (eventTarget.className && eventTarget.className.indexOf('ui-chkbox') === 0) {
-                let index = this.findIndexInChecked(node);
-                let checked = (index >= 0);
+                let checked = node.checked;
 
                 if (!checked) {
                     if (this.isSingleSelectionMode()) {
@@ -803,39 +794,6 @@ export class AdvancedTree implements OnInit, AfterContentInit, OnDestroy, Advanc
         return index;
     }
 
-    findIndexInChecked(node: AdvancedTreeNode) {
-        let index: number = -1;
-
-        if (this.selectionMode && this.checked) {
-            if (this.isCheckboxMode()) {
-                for (let i = 0; i < this.checked.length; i++) {
-                    if (this.checked[i] === node) {
-                        index = i;
-                        break;
-                    }
-                }
-            }
-        }
-
-        return index;
-    }
-
-    findIndexInPartialChecked(node: AdvancedTreeNode) {
-        let index: number = -1;
-
-        if (this.selectionMode && this.partialchecked) {
-            if (this.isCheckboxMode()) {
-                for (let i = 0; i < this.partialchecked.length; i++) {
-                    if (this.partialchecked[i] === node) {
-                        index = i;
-                        break;
-                    }
-                }
-            }
-        }
-
-        return index;
-    }
 
     propagateUp(node: AdvancedTreeNode, select: boolean) {
         if (node.children && node.children.length) {
@@ -905,7 +863,7 @@ export class AdvancedTree implements OnInit, AfterContentInit, OnDestroy, Advanc
             let checkedCount = 0;
             let childPartialChecked = false;
             for (let child of node.children) {
-                if (this.isChecked(child)) {
+                if (child.checked) {
                     checkedCount++;
                 }
                 else if (child.partialChecked) {
@@ -914,34 +872,19 @@ export class AdvancedTree implements OnInit, AfterContentInit, OnDestroy, Advanc
             }
 
             if (check && checkedCount === node.children.length) {
-                this.checked = [...this.checked || [], node];
+                node.checked = true;
                 node.partialChecked = false;
-                let idx = this.findIndexInPartialChecked(node);
-                if (idx > -1) {
-                    this.partialchecked.splice(idx, 1);
-                }
             }
             else {
                 if (!check) {
-                    let index = this.findIndexInChecked(node);
-                    if (index >= 0) {
-                        this.checked = this.checked.filter((val, i) => i !== index);
-                    }
+                    node.checked = false;
                 }
 
                 if (childPartialChecked || checkedCount > 0 && checkedCount !== node.children.length) {
                     node.partialChecked = true;
-                    let idx = this.findIndexInPartialChecked(node);
-                    if (idx > -1) {
-                        this.partialchecked.push(node);
-                    }
                 }
                 else {
                     node.partialChecked = false;
-                    let idx = this.findIndexInPartialChecked(node);
-                    if (idx > -1) {
-                        this.partialchecked.splice(idx, 1);
-                    }
                 }
             }
         }
@@ -953,20 +896,8 @@ export class AdvancedTree implements OnInit, AfterContentInit, OnDestroy, Advanc
     }
 
     propagateChkDown(node: AdvancedTreeNode, check: boolean) {
-        let index = this.findIndexInChecked(node);
-
-        if (check && index === -1) {
-            this.checked = [...this.checked || [], node];
-        }
-        else if (!check && index > -1) {
-            this.checked = this.checked.filter((val, i) => i !== index);
-        }
-
+        node.checked = check;
         node.partialChecked = false;
-        let idx = this.findIndexInPartialChecked(node);
-        if (idx > -1) {
-            this.partialchecked.splice(idx, 1);
-        }
 
         if (node.children && node.children.length) {
             for (let child of node.children) {
@@ -979,13 +910,6 @@ export class AdvancedTree implements OnInit, AfterContentInit, OnDestroy, Advanc
         return this.findIndexInSelection(node) !== -1;
     }
 
-    isChecked(node: AdvancedTreeNode) {
-        return this.findIndexInChecked(node) !== -1;
-    }
-
-    isPartialChecked(node: AdvancedTreeNode) {
-        return this.findIndexInPartialChecked(node) !== -1;
-    }
 
     isSingleSelectionMode() {
         return this.selectionMode && this.selectionMode === 'single';
