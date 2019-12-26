@@ -391,18 +391,11 @@ export class AdvancedTree implements OnInit, AfterContentInit, OnDestroy, Advanc
 
     @Input() inlineEdit = false;
 
-    @Input() selection: any;
-
     @Input() doubleClickTimeout: number = 250;
 
     @Input() slowDoubleClickTimeout: number = 1000;
 
     @Output() selectionChange: EventEmitter<any> = new EventEmitter();
-
-    @Output() addedNodesChange: EventEmitter<any> = new EventEmitter();
-
-    @Output() removedNodesChange: EventEmitter<any> = new EventEmitter();
-
     @Output() checkedChange: EventEmitter<any> = new EventEmitter();
 
     @Output() onNodeDblClick: EventEmitter<any> = new EventEmitter();
@@ -485,6 +478,8 @@ export class AdvancedTree implements OnInit, AfterContentInit, OnDestroy, Advanc
 
     private clicks = 0;
 
+    private mapTreeNodeIdXSelection = new Map<String, AdvancedTreeNode>();
+
     constructor(public el: ElementRef, @Optional() public dragDropService: AdvancedTreeDragDropService) { }
 
     ngOnInit() {
@@ -528,14 +523,6 @@ export class AdvancedTree implements OnInit, AfterContentInit, OnDestroy, Advanc
         if (node.editable) {
             return false;
         }
-        if (this.selection === null) {
-            if (this.isSingleSelectionMode()) {
-                this.selection = null;
-            }
-            else {
-                this.selection = [];
-            }
-        }
         this.clicks++;
 
         if (this.clicks === 1) {
@@ -553,9 +540,6 @@ export class AdvancedTree implements OnInit, AfterContentInit, OnDestroy, Advanc
 
     onNodeSingleClick(event: MouseEvent, node: AdvancedTreeNode) {
         let eventTarget = (<Element>event.target);
-        let addedNodes: AdvancedTreeNode[] = [];
-        let removedNodes: AdvancedTreeNode[] = [];
-
         if (eventTarget.className && eventTarget.className.indexOf('ui-tree-toggler') === 0) {
             return;
         }
@@ -601,128 +585,36 @@ export class AdvancedTree implements OnInit, AfterContentInit, OnDestroy, Advanc
             if (node.selectable === false) {
                 return;
             }
-            let index = this.findIndexInSelection(node);
-            let selected = (index >= 0);
-            let metaSelection = this.nodeTouched ? false : this.metaKeySelection;
             let metaKey = (event.metaKey || event.ctrlKey);
 
-            if (selected) {
-                // node already selected
-                if (this.isSingleSelectionMode()) {
-                    // single selection, just clear selection
-                    removedNodes.push(this.selection);
-                    this.selection = [];
-                    // this.selectionChange.emit(this.selection);
-                    // this.removedNodesChange.emit(removedNodes);
-                    // this.onNodeUnselect.emit({originalEvent: event, node: node});
-                }
-                else {
-                    if (metaSelection) {
-                        if (metaKey) {
-                            // metakey multiselection, remove node from selection
-                            removedNodes.push(node);
-                            this.selection = this.selection.filter((val, i) => i !== index);
-                            if (this.propagateSelectionDown) {
-                                this.propagateDown(node, addedNodes, removedNodes, false); //
-                            }
-                            // this.selectionChange.emit(this.selection);
-                            // this.removedNodesChange.emit(removedNodes);
-                            // this.onNodeUnselect.emit({originalEvent: event, node: node});
-                        }
-                        else {
-                            // multiselection, just keep this node selected
-
-                            // ++++ explorer like behaviour ++++
-                            // this.selection = [...[], node];
-                            // if ( this.propagateSelectionDown ) {
-                            //     this.propagateDown(node, true);
-                            // }
-                            // this.selectionChange.emit(this.selection);
-                            // this.onNodeSelect.emit({originalEvent: event, node: node});
-                            // ++++ explorer like behaviour end ++++
-
-                            // ++++ novo like behaviour ++++
-                            removedNodes.push(node);
-                            this.selection = this.selection.filter((val, i) => i !== index);
-                            if (this.propagateSelectionDown) {
-                                this.propagateDown(node, addedNodes, removedNodes, false);
-                            }
-                            // this.selectionChange.emit(this.selection);
-                            // this.removedNodesChange.emit(removedNodes);
-                            // this.onNodeUnselect.emit({originalEvent: event, node: node});
-                            // ++++ novo like behaviour end ++++
-                        }
-                    }
-                    else {
-                        // multiselection, remove node from selection
-                        removedNodes.push(node);
-                        this.selection = this.selection.filter((val, i) => i !== index);
+            if (!this.isSelected(node)) { // If node is not selected
+                // unselect other nodes, if control is not pressed
+                if (!metaKey) {
+                    this.mapTreeNodeIdXSelection.forEach((value: AdvancedTreeNode, key: string) => {
+                        const selectedNode: AdvancedTreeNode = value;
+                        selectedNode.selected = false;
                         if (this.propagateSelectionDown) {
-                            this.propagateDown(node, addedNodes, removedNodes, false);
+                            this.propagateDown(selectedNode, false);
                         }
-                        // this.selectionChange.emit(this.selection);
-                        // this.removedNodesChange.emit(removedNodes);
-                        // this.onNodeUnselect.emit({originalEvent: event, node: node});
-                    }
+                    });
+                    this.mapTreeNodeIdXSelection.clear();
+                }
+                // Select the clicked node
+                node.selected = true;
+                this.mapTreeNodeIdXSelection.set(node.id, node);
+                if (this.propagateSelectionDown) {
+                    this.propagateDown(node, true);
+                }
+                this.onNodeSelect.emit({ originalEvent: event, node: node });
+            } else {  // If node is already selected
+                this.mapTreeNodeIdXSelection.delete(node.id);
+                node.selected = false;
+                if (this.propagateSelectionDown) {
+                    this.propagateDown(node, false);
                 }
                 this.onNodeUnselect.emit({ originalEvent: event, node: node });
             }
-            else {
-                // necessary for all conditions within
-                addedNodes.push(node);
-                // node not selected
-                if (this.isSingleSelectionMode()) {
-                    // single selection, just set node as selection
-                    if (this.selection) {
-                        removedNodes.push(this.selection);
-                    }
-                    this.selection = node;
-                    // this.selectionChange.emit(this.selection);
-                    // this.onNodeSelect.emit({originalEvent: event, node: node});
-                }
-                else {
-                    if (metaSelection) {
-                        if (metaKey) {
-                            // metakey multiselection, add node to selection
-                            this.selection = [...this.selection || [], node];
-                            if (this.propagateSelectionDown) {
-                                this.propagateDown(node, addedNodes, removedNodes, true);
-                            }
-                            // this.selectionChange.emit(this.selection);
-                            // this.addedNodesChange.emit(addedNodes);
-                            // this.onNodeSelect.emit({originalEvent: event, node: node});
-                        }
-                        else {
-                            // metakey multiselection, just set node as selected
-                            if (this.selection) {
-                                removedNodes = this.selection;
-                            }
-                            this.selection = [];
-                            this.selection = [...this.selection, node];
-                            if (this.propagateSelectionDown) {
-                                this.propagateDown(node, addedNodes, removedNodes, true);
-                            }
-                            // this.selectionChange.emit(this.selection);
-                            // this.removedNodesChange.emit(removedNodes);
-                            // this.onNodeSelect.emit({originalEvent: event, node: node});
-                        }
-                    }
-                    else {
-                        // multiselection, just add node to selection
-                        this.selection = [...this.selection || [], node];
-                        if (this.propagateSelectionDown) {
-                            this.propagateDown(node, addedNodes, removedNodes, true);
-                        }
-                        // this.selectionChange.emit(this.selection);
-                        // this.addedNodesChange.emit(addedNodes);
-                        // this.onNodeSelect.emit({originalEvent: event, node: node});
-                    }
-                }
-                this.onNodeSelect.emit({ originalEvent: event, node: node });
-            }
-            this.selectionChange.emit(this.selection);
-            this.addedNodesChange.emit(addedNodes);
-            this.removedNodesChange.emit(removedNodes);
+            this.selectionChange.emit(this.mapTreeNodeIdXSelection);
         }
         this.nodeTouched = false;
     }
@@ -732,8 +624,6 @@ export class AdvancedTree implements OnInit, AfterContentInit, OnDestroy, Advanc
     }
 
     onNodeRightClick(event: MouseEvent, node: AdvancedTreeNode) {
-        let addedNodes: AdvancedTreeNode[] = [];
-        let removedNodes: AdvancedTreeNode[] = [];
         if (this.contextMenu) {
             let eventTarget = (<Element>event.target);
 
@@ -744,27 +634,16 @@ export class AdvancedTree implements OnInit, AfterContentInit, OnDestroy, Advanc
                 let checked = node.checked;
 
                 if (!checked) {
-                    if (this.isSingleSelectionMode()) {
-                        this.checkedChange.emit([node]);
-                    }
-                    else {
-                        this.checkedChange.emit([node]);
-                    }
+                    this.checkedChange.emit([node]);
                 }
                 // this.contextMenu.show(event);
                 // this.onNodeContextMenuSelect.emit({originalEvent: event, node: node});
             }
             else {
-                let index = this.findIndexInSelection(node);
-                let selected = (index >= 0);
+                let selected: boolean = this.mapTreeNodeIdXSelection.has(node.id);
 
                 if (!selected) {
-                    if (this.isSingleSelectionMode()) {
-                        this.selectionChange.emit({ selectionList: this.selection, addedList: addedNodes, removedList: removedNodes });
-                    }
-                    else {
-                        this.selectionChange.emit({ selectionList: this.selection, addedList: addedNodes, removedList: removedNodes });
-                    }
+                    this.selectionChange.emit(this.mapTreeNodeIdXSelection);
                 }
 
                 this.contextMenu.show(event);
@@ -773,87 +652,13 @@ export class AdvancedTree implements OnInit, AfterContentInit, OnDestroy, Advanc
         }
     }
 
-    findIndexInSelection(node: AdvancedTreeNode) {
-        let index: number = -1;
-
-        if (this.selectionMode && this.selection) {
-            if (this.isSingleSelectionMode()) {
-                index = (this.selection === node) ? 0 : - 1;
-            }
-            else {
-
-                for (let i = 0; i < this.selection.length; i++) {
-                    if (this.selection[i] === node) {
-                        index = i;
-                        break;
-                    }
-                }
-            }
-        }
-
-        return index;
-    }
 
 
-    propagateUp(node: AdvancedTreeNode, select: boolean) {
-        if (node.children && node.children.length) {
-            let selectedCount = 0;
-            let childPartialSelected = false;
-            for (let child of node.children) {
-                if (this.isSelected(child)) {
-                    selectedCount++;
-                }
-                // else if (child.partialSelected) {
-                // childPartialSelected = true;
-                // }
-            }
-
-            if (select && selectedCount === node.children.length) {
-                this.selection = [...this.selection || [], node];
-                // node.partialSelected = false;
-            }
-            else {
-                if (!select) {
-                    let index = this.findIndexInSelection(node);
-                    if (index >= 0) {
-                        this.selection = this.selection.filter((val, i) => i !== index);
-                    }
-                }
-
-                if (childPartialSelected || selectedCount > 0 && selectedCount !== node.children.length) {
-                    // node.partialSelected = true;
-                }
-                else {
-                    // node.partialSelected = false;
-                }
-            }
-        }
-
-        let parent = node.parent;
-        if (parent) {
-            this.propagateUp(parent, select);
-        }
-    }
-
-    propagateDown(node: AdvancedTreeNode, addedNodes: AdvancedTreeNode[], removedNodes: AdvancedTreeNode[], select: boolean) {
-        let index = this.findIndexInSelection(node);
-
-        if (select && index === -1) {
-            if (addedNodes.indexOf(node) === -1) {
-                addedNodes.push(node);
-            }
-            this.selection = [...this.selection || [], node];
-        }
-        else if (!select && index > -1) {
-            if (removedNodes.indexOf(node) === -1) {
-                removedNodes.push(node);
-            }
-            this.selection = this.selection.filter((val, i) => i !== index);
-        }
-
+    propagateDown(node: AdvancedTreeNode, select: boolean) {
         if (node.children && node.children.length) {
             for (let child of node.children) {
-                this.propagateDown(child, addedNodes, removedNodes, select);
+                child.selected = select;
+                this.propagateDown(child, select);
             }
         }
     }
@@ -907,16 +712,7 @@ export class AdvancedTree implements OnInit, AfterContentInit, OnDestroy, Advanc
     }
 
     isSelected(node: AdvancedTreeNode) {
-        return this.findIndexInSelection(node) !== -1;
-    }
-
-
-    isSingleSelectionMode() {
-        return this.selectionMode && this.selectionMode === 'single';
-    }
-
-    isMultipleSelectionMode() {
-        return this.selectionMode && this.selectionMode === 'multiple';
+        return node.selected;
     }
 
     isCheckboxMode() {

@@ -61,9 +61,6 @@ export class AdvancedTreeDemo implements OnInit {
     checkedFiles24: AdvancedTreeNode[];
     checkedFiles25: AdvancedTreeNode[];
 
-    addedfiles: AdvancedTreeNode[] = [];
-    removedfiles: AdvancedTreeNode[] = [];
-
     partialCheckedNodes: AdvancedTreeNode[] = [];
 
     items: MenuItem[];
@@ -133,14 +130,6 @@ export class AdvancedTreeDemo implements OnInit {
     selectionChanged(event) {
         // this.addedfiles = event.data;
         // this.removedfiles = event.data;
-    }
-
-    addedChanged(event) {
-        this.addedfiles = event;
-    }
-
-    removedChanged(event) {
-        this.removedfiles = event;
     }
 
     nodeSelect(event) {
