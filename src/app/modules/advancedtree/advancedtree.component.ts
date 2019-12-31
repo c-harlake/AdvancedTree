@@ -478,7 +478,7 @@ export class AdvancedTree implements OnInit, AfterContentInit, OnDestroy, Advanc
 
     private clicks = 0;
 
-    private mapTreeNodeIdXSelection = new Map<String, AdvancedTreeNode>();
+    private mapTreeNodeIdXSelection = new Map<string, AdvancedTreeNode>();
 
     constructor(public el: ElementRef, @Optional() public dragDropService: AdvancedTreeDragDropService) { }
 
@@ -658,6 +658,7 @@ export class AdvancedTree implements OnInit, AfterContentInit, OnDestroy, Advanc
         if (node.children && node.children.length) {
             for (let child of node.children) {
                 child.selected = select;
+                this.mapTreeNodeIdXSelection.set(child.id, child);
                 this.propagateDown(child, select);
             }
         }
